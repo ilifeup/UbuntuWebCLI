@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+
+<html lang="zh-Hant"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><title>Ubuntu UEM Lite ZERO-OPS Rev7｜完整重構計畫書</title><style>:root{--bg:#f4f7fb;--ink:#17253c;--muted:#52637b;--blue:#175cd3;--line:#dbe3ee;--card:#fff}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:system-ui,-apple-system,'Noto Sans TC',sans-serif;color:var(--ink);background:var(--bg);line-height:1.75}header{background:linear-gradient(115deg,#0d2346,#175cd3);color:white;padding:58px max(24px,calc((100vw - 1100px)/2))}header h1{font-size:clamp(26px,4vw,42px);line-height:1.3;margin:0 0 14px}header p{opacity:.9;max-width:780px}main{max-width:1100px;margin:auto;padding:26px 22px 80px}.layout{display:grid;grid-template-columns:230px minmax(0,1fr);gap:24px}nav{position:sticky;top:16px;align-self:start;background:white;border:1px solid var(--line);border-radius:14px;padding:16px}nav a{display:block;padding:6px 8px;color:var(--muted);text-decoration:none;font-size:14px}nav a:hover{color:var(--blue)}section{background:var(--card);padding:26px 30px;margin-bottom:20px;border:1px solid var(--line);border-radius:16px;box-shadow:0 4px 18px #1b36570b}h2{margin:0 0 18px;font-size:23px;border-bottom:1px solid var(--line);padding-bottom:12px}h3{margin:23px 0 8px;font-size:17px;color:#164c9a}p{margin:10px 0}ul,ol{padding-left:24px}li{margin:5px 0}.pill{display:inline-block;background:#e8f1ff;color:#1354a4;border-radius:999px;padding:4px 12px;font-size:13px;font-weight:700}.note{border-left:4px solid #2a70dd;background:#f0f6ff;padding:12px 16px;border-radius:5px;margin:15px 0}.warning{border-left-color:#d98b1b;background:#fff7e9}.diagram{display:flex;flex-direction:column;align-items:center;gap:8px;margin:22px auto;max-width:620px}.node{width:100%;border:1px solid #aac4ed;border-radius:12px;padding:13px 18px;text-align:center;background:#f3f8ff;font-weight:700}.arrow{color:#2a70dd;font-size:24px}.sub{font-size:13px;color:var(--muted);font-weight:400}table{border-collapse:collapse;width:100%;font-size:14px;margin:14px 0}th,td{border:1px solid var(--line);padding:10px 12px;text-align:left;vertical-align:top}th{background:#edf4ff}code,pre{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#14253d;color:#e9f3ff;padding:18px;border-radius:10px;font-size:13px;line-height:1.65}code{background:#eef3fa;padding:1px 4px;border-radius:4px}pre code{background:none;padding:0}.check{list-style:none;padding:0}.check li{padding:6px 0;border-bottom:1px solid #edf1f6}.check input{margin-right:8px}a{color:#1459c4}.meta{display:flex;gap:9px;flex-wrap:wrap;margin-top:15px}.meta span{background:#ffffff20;border:1px solid #ffffff50;border-radius:20px;padding:4px 12px;font-size:13px}.toolbar{display:flex;justify-content:flex-end;margin-bottom:15px}.toolbar button{background:#175cd3;border:0;border-radius:8px;color:white;padding:9px 18px;cursor:pointer}.small{font-size:13px;color:var(--muted)}@media(max-width:820px){.layout{display:block}nav{position:static;margin-bottom:20px;display:flex;flex-wrap:wrap;gap:2px}nav a{font-size:12px}section{padding:20px 17px}table{display:block;overflow-x:auto}header{padding:35px 22px}}@media print{body{background:white}header{padding:28px;color:#17253c;background:white;border-bottom:2px solid #175cd3}main{max-width:none;padding:12px}.layout{display:block}nav,.toolbar{display:none}section{break-inside:avoid;box-shadow:none;border:0;border-bottom:1px solid #ddd;border-radius:0;padding:14px 0}a{color:#17253c}}
+@media print{section{break-inside:auto}tr{break-inside:avoid}}
+section table{width:100%}section td,section th{overflow-wrap:anywhere}section h3{scroll-margin-top:18px}</style><style>
+.r7-flow{display:flex;flex-direction:column;align-items:center;gap:8px;margin:20px 0}.r7-node{width:min(100%,720px);border:1px solid #a4c2db;background:#f3f8fe;border-radius:12px;padding:17px;text-align:center}.r7-node strong{display:block;font-size:17px}.r7-node small{color:#52677b}.r7-arrow{font-size:25px;color:#2672a4}.r7-pair{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:min(100%,720px)}.r7-pair .r7-node{height:100%}.r7-metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}.r7-metric{padding:17px;background:#f3f8fd;border:1px solid #b7ccdf;border-radius:12px}.r7-metric b{display:block;font-size:26px;color:#225d8a}.r7-bars{display:grid;gap:12px}.r7-bar{display:grid;grid-template-columns:minmax(170px,240px) 1fr 48px;gap:10px;align-items:center}.r7-track{background:#e6eef5;height:16px;border-radius:20px;overflow:hidden}.r7-fill{background:#3e79a9;height:100%;border-radius:20px}.r7-mock{border:1px solid #b6c8d9;border-radius:12px;overflow:hidden}.r7-mock-head{background:#17456c;color:white;padding:13px;font-weight:bold}.r7-mock-tabs{display:flex;flex-wrap:wrap;gap:6px;background:#e9f0f7;padding:10px}.r7-mock-tabs span{background:white;border:1px solid #c5d4e3;border-radius:7px;padding:7px;font-size:12px}.r7-mock-body{padding:17px}.r7-fake-input{padding:12px;border:1px solid #bccbd8;border-radius:8px;color:#67788a;margin:10px 0}.r7-note{padding:12px;border-left:4px solid #3980a8;background:#eaf4fb;margin:12px 0}@media(max-width:650px){.r7-pair{grid-template-columns:1fr}.r7-bar{grid-template-columns:1fr 1fr 40px}}
+</style><style>
+#chapter-nav{display:block;max-height:calc(100vh - 36px);overflow-y:auto;position:sticky;top:16px;align-self:start;padding:12px}
+#nav-search{width:100%;padding:11px;border:1px solid #b5c6d9;border-radius:9px;font-size:14px;margin-bottom:10px;background:#fff;color:#15283e}
+.nav-group{margin:8px 0 15px}.nav-heading{font-weight:800;font-size:13px;color:#244e75;background:#e7f0fa;border-radius:7px;padding:9px 10px;margin-bottom:5px}
+.chapter-button{display:block;width:100%;text-align:left;padding:10px;border:0;border-radius:8px;background:transparent;color:#263b52;font-size:13px;line-height:1.5;cursor:pointer}
+.chapter-button:hover,.chapter-button:focus-visible{background:#e8f2fc;outline:2px solid transparent}
+.chapter-button.active{background:#1b5fa2;color:white;font-weight:700}
+.chapter-button[hidden],.nav-group[hidden],.chapter-panel[hidden]{display:none!important}
+.rev7-toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 14px;padding:12px;background:#e9f1fa;border-radius:12px}
+.rev7-toolbar button{padding:9px 13px;border:1px solid #9db9d5;border-radius:8px;background:#fff;color:#164c7b;font-weight:700;cursor:pointer}
+.rev7-toolbar button:hover{background:#d7e8f9}
+#chapter-counter{margin-left:auto;font-size:12px;color:#345575}
+.rev7-notice{padding:12px 15px;border-left:4px solid #2c719d;background:#f0f7ff;border-radius:6px;margin-bottom:16px}
+.chapter-panel{display:block;min-width:0}
+.chapter-panel table{display:block;overflow-x:auto}
+.chapter-panel pre{max-width:100%;white-space:pre-wrap;overflow-wrap:anywhere}
+@media(max-width:820px){#chapter-nav{position:static;max-height:320px;overflow-y:auto}#chapter-counter{margin-left:0;width:100%}}
+@media print{#chapter-nav,.rev7-toolbar,.rev7-notice{display:none!important}.chapter-panel[hidden]{display:block!important}}
+</style></head><body><header><span class="pill">架構與實作規格｜規劃稿</span><h1>Ubuntu UEM Lite ZERO-OPS｜Rev7 完整重構計畫書</h1><aside style="padding:14px;background:#e9f5ef;color:#174a37;border-left:4px solid #2d8263;margin:12px 0"><b>Rev7 2026-11-05｜輕量重構提案</b>：保留 Rev6 原 33 章供追溯；新增第 33–39 章作為最新精簡架構建議。與舊規格衝突處先列為待核准決策，不表示程式已修改、部署或驗收。</aside><aside style="margin:1rem 0;padding:1rem;border-left:4px solid #277d67;background:#ecf7f3;color:#163d34"><strong>Rev6 最新狀態（2026-11-04）</strong>：目標 GitHub 儲存庫已確認為 Private。Rev5 舊章節提及 Public 的文字屬歷史紀錄，以第 30–32 章的私人倉庫狀態驗證及禁止自動刪除規格為準。P1 尚未實作；B1 程式不能當作 P1 完工。</aside><p>包含既有 Rev4 全部章節；新增 P0 GitHub 主機資訊同步、安全公開規則、後台操作流程、API 與驗收規格。</p><div class="meta"><span>更新：2026-11-04</span><span>基線：B1 ZIP（304 檔）</span><span>狀態：B1 已編寫、整合未驗收</span><span>對外部署：NO-GO</span><span>Flutter：等待 B1.1 驗收</span></div></header><main><div class="toolbar"><button onclick="window.print()">列印／另存 PDF</button></div><div class="layout"><nav aria-label="計畫書章節導覽" id="chapter-nav"><input aria-label="搜尋章節" id="nav-search" placeholder="搜尋章節／關鍵字" type="search"/><div class="nav-group"><div class="nav-heading">Rev7｜輕量重構重點</div><button aria-controls="lite-overview" class="chapter-button" data-target="lite-overview" type="button">33｜重構結論與核心原則</button><button aria-controls="lite-overlap" class="chapter-button" data-target="lite-overlap" type="button">34｜兩系統功能重疊矩陣</button><button aria-controls="lite-cut" class="chapter-button" data-target="lite-cut" type="button">35｜過度設計與刪減優先度</button><button aria-controls="lite-architecture" class="chapter-button" data-target="lite-architecture" type="button">36｜UEM Lite 目標架構圖</button><button aria-controls="lite-ui" class="chapter-button" data-target="lite-ui" type="button">37｜五個 Tab 圖文 UI 規劃</button><button aria-controls="lite-roadmap" class="chapter-button" data-target="lite-roadmap" type="button">38｜分批實作與驗收</button><button aria-controls="lite-decisions" class="chapter-button" data-target="lite-decisions" type="button">39｜決策追蹤與 Claude 接續指令</button></div><div class="nav-group"><div class="nav-heading">Rev6｜既有完整規格</div><button aria-controls="overview" class="chapter-button" data-target="overview" type="button">01｜專案摘要與目標</button><button aria-controls="baseline" class="chapter-button" data-target="baseline" type="button">02｜既有系統與範圍</button><button aria-controls="architecture" class="chapter-button" data-target="architecture" type="button">03｜完整架構與資料流</button><button aria-controls="android" class="chapter-button" data-target="android" type="button">04｜Flutter Android App 功能與 HTTP Shortcuts 備援</button><button aria-controls="cloudflare" class="chapter-button" data-target="cloudflare" type="button">05｜Cloudflare Tunnel 與 Access</button><button aria-controls="api" class="chapter-button" data-target="api" type="button">06｜API 端點與契約</button><button aria-controls="job" class="chapter-button" data-target="job" type="button">07｜Job、CLI 執行與 Markdown 輸出</button><button aria-controls="backend" class="chapter-button" data-target="backend" type="button">08｜後端模組、資料表與重用審查</button><button aria-controls="security" class="chapter-button" data-target="security" type="button">09｜安全模型與權限矩陣</button><button aria-controls="mobile-auth" class="chapter-button" data-target="mobile-auth" type="button">09A｜Flutter Android 長期登入與二次驗證（2026-11-03 修訂）</button><button aria-controls="deployment" class="chapter-button" data-target="deployment" type="button">10｜部署、測試環境與回復方案</button><button aria-controls="acceptance" class="chapter-button" data-target="acceptance" type="button">11｜完整驗收規格</button><button aria-controls="schedule" class="chapter-button" data-target="schedule" type="button">12｜開發批次、交付與時程</button><button aria-controls="next" class="chapter-button" data-target="next" type="button">13｜立即執行的下一步</button><button aria-controls="references" class="chapter-button" data-target="references" type="button">14｜參考文件</button><button aria-controls="audit" class="chapter-button" data-target="audit" type="button">15｜Claude 交接原文問題與完成度判讀</button><button aria-controls="responses" class="chapter-button" data-target="responses" type="button">16｜對 Claude 五大問題的逐項技術回覆</button><button aria-controls="securityrepair" class="chapter-button" data-target="securityrepair" type="button">17｜P0/P1 安全修復清單與驗收證據</button><button aria-controls="b1" class="chapter-button" data-target="b1" type="button">18｜B1 可執行開發規格、資料表與 API 契約</button><button aria-controls="acceptance2" class="chapter-button" data-target="acceptance2" type="button">19｜詳細驗收矩陣、證據與 GitHub 交接</button><button aria-controls="b1-evidence" class="chapter-button" data-target="b1-evidence" type="button">20｜B1 原始碼實際狀態與驗證證據（2026-11-04）</button><button aria-controls="b1-risk" class="chapter-button" data-target="b1-risk" type="button">21｜B1 七大風險：Claude 現況、ChatGPT 技術回覆與決策</button><button aria-controls="b1-auth" class="chapter-button" data-target="b1-auth" type="button">22｜手機登入、Token、MFA 與 Refresh 的明確契約</button><button aria-controls="b1-data" class="chapter-button" data-target="b1-data" type="button">23｜資料庫、API、Action Registry 與 Worker 端到端契約</button><button aria-controls="b1-security" class="chapter-button" data-target="b1-security" type="button">24｜P0/P1 安全修復、金鑰備份與部署阻擋條件</button><button aria-controls="b11" class="chapter-button" data-target="b11" type="button">25｜B1.1 修復批次、依賴順序與可執行驗收</button><button aria-controls="handoff4" class="chapter-button" data-target="handoff4" type="button">26｜後續交付與版本決策紀錄</button><button aria-controls="inventory-p0" class="chapter-button" data-target="inventory-p0" type="button">27｜新增 P0：UEM 後台設定 → GitHub Ubuntu 主機資訊同步</button><button aria-controls="inventory-security" class="chapter-button" data-target="inventory-security" type="button">28｜Rules.md 最高規則與公開資訊安全分級</button><button aria-controls="inventory-acceptance" class="chapter-button" data-target="inventory-acceptance" type="button">29｜GitHub 同步 P0 開發契約、批次與驗收標準</button><button aria-controls="inventory-p1" class="chapter-button" data-target="inventory-p1" type="button">30｜新增 P1：目錄／檔案盤點、Markdown 報告與安全掃描</button><button aria-controls="cleanup-p1" class="chapter-button" data-target="cleanup-p1" type="button">31｜新增 P1：建議刪除之目錄／檔案與安全指令預覽</button><button aria-controls="github-p1" class="chapter-button" data-target="github-p1" type="button">32｜P1 GitHub 同步契約、程式進度、開發批次與正式驗收</button></div></nav><article><div aria-label="閱讀控制" class="rev7-toolbar" role="group">
+<button id="show-rev7" type="button">Rev7 新增 7 章</button>
+<button id="show-all" type="button">展開全部 40 章</button>
+<button id="show-one" type="button">單章閱讀</button>
+<span aria-live="polite" id="chapter-counter">載入中</span>
+</div><div class="rev7-notice"><strong>閱讀提示：</strong>預設顯示第 33 章（Rev7 新增內容）。左側／上方導航可切換全部 40 章；可搜尋章節或按「展開全部」。本頁不需網路、框架或外部 CDN。</div><div class="note"><strong>2026-11-04 實作狀態：</strong>B1 PHP API、SQLite Migration、Python Worker 已有程式；局部測試通過，但 PHP pdo_sqlite 整合、HTTP E2E、Cloudflare 真實登入及所有 P0 安全驗收尚未完成。正式對外部署：<strong>NO-GO</strong>。請優先閱讀第 20–26 章。</div><section class="chapter-panel" hidden="" id="overview" role="tabpanel" tabindex="-1"><h2>01｜專案摘要與目標</h2><p><strong>核心目標：</strong>Android 13 使用 HTTP Request Shortcuts 直接呼叫 Cloudflare Tunnel 後方的 Ubuntu UEM API，無須每次開啟 Chrome；所有請求由既有 UEM 授權及共用 CLI Execution Service 執行。</p><ul><li>系統監控：CPU、RAM、磁碟、ZFS、服務健康狀態。</li><li>開發管理：Docker 容器、GitHub Runner、CI 狀態。</li><li>驗收與任務：UEM 驗收、非同步任務、進度、取消、稽核。</li><li>輸出：完整 stdout、stderr、Exit Code；提供文字選取／複製及 <strong>僅 .md 檔案匯出</strong>。</li><li>未來擴充：Flutter Client、MCP Adapter、AI Agent 共用同一 API 與執行器。</li></ul><div class="note">本文件是完整的目標設計，並非宣稱 Ubuntu UEM v1.01 已完成所列功能；正式改碼前需核對現有 Repository、服務、資料庫及 Cloudflare 設定。</div></section><section class="chapter-panel" hidden="" id="baseline" role="tabpanel" tabindex="-1"><h2>02｜既有系統與範圍</h2><table><tr><th>項目</th><th>已知條件／處理方式</th></tr><tr><td>Ubuntu</td><td>Ubuntu 26.04.1；i5-14400、16 GB RAM、NVMe SSD、12 TB ×2 ZFS Mirror。</td></tr><tr><td>既有 UEM</td><td>v1.01 WebApp 與 CLI 驗收工具；需檢查實際程式結構，禁止盲目替換。</td></tr><tr><td>手機</td><td>Android 13；Flutter Android App 為正式端；HTTP Request Shortcuts 保留為測試／備援，不需 Root。</td></tr><tr><td>外網</td><td>既有 Cloudflare Tunnel 優先重用；不開放 SSH Port 22。</td></tr><tr><td>網域</td><td>建議 <code>uem-api.isee.at</code>，僅為候選，尚未建立。</td></tr><tr><td>輸出規則</td><td>只提供 .md 下載，不提供 .json 下載 UI 或對外匯出端點；API JSON 回應仍保留。</td></tr><tr><td>敏感遮罩</td><td>現階段原始 .md 不做內容遮罩，需下載權限、保留期限、提示與稽核；後續再評估遮罩。</td></tr></table><h3>明確不做</h3><ul><li>不另建一套 Android 專用 CLI 執行器。</li><li>不在 MVP 開放任意 Shell、sudo 或直接以 Docker Socket 暴露 HTTP API。</li><li>不自動合併 PR、不操作正式資料庫、不擅自修改既有 Cloudflare 正式路由。</li><li>本階段將 Flutter Android App 納入正式開發範圍；MCP Server 僅預留契約。先驗收共用 API，再實作 App，不另建手機專用執行器。</li></ul></section><section class="chapter-panel" hidden="" id="architecture" role="tabpanel" tabindex="-1"><h2>03｜完整架構與資料流</h2><div class="diagram"><div class="node">Android 13｜HTTP Request Shortcuts<div class="sub">GET / POST、變數、桌面捷徑、結果顯示</div></div><div class="arrow">↓ HTTPS</div><div class="node">Cloudflare Access + Tunnel<div class="sub">Service Auth、TLS、Hostname 路由</div></div><div class="arrow">↓ localhost / 內部網路</div><div class="node">Ubuntu UEM API Gateway<div class="sub">UEM Token、RBAC、參數驗證、限流、審計</div></div><div class="arrow">↓</div><div class="node">Job Queue + 共用 CLI Execution Service<div class="sub">Action 白名單、Worker、Timeout、Cancel、輸出持久化</div></div><div class="arrow">↓</div><div class="node">Ubuntu / Docker / GitHub Runner / UEM 驗收<div class="sub">最小權限執行，結果回存 UEM</div></div></div><p><strong>請求生命週期：</strong>Android 發送 HTTPS → Cloudflare Access 驗證 → UEM API 授權 → 讀取狀態或建立 Job → Worker 執行 → 保存結果 → Android 輪詢 → 顯示摘要／下載 .md。</p><h3>共用核心原則</h3><p>原有 Web UI、Android API、未來 MCP Adapter 都只能呼叫相同的 Action Registry、Policy Engine、Job Service、Audit Service。避免出現 Web 有權限檢查而 API 可繞過的分叉。</p></section><section class="chapter-panel" hidden="" id="android" role="tabpanel" tabindex="-1"><h2>04｜Flutter Android App 功能與 HTTP Shortcuts 備援</h2><p><strong>正式方向：</strong>Flutter Android App 提供系統監控、Docker／Runner、任務狀態、進度、取消、完整日誌與 .md 下載；HTTP Request Shortcuts 僅作 API 測試與備援。</p><table><tr><th>群組</th><th>捷徑</th><th>Action ID</th><th>權限</th></tr><tr><td>系統</td><td>系統總覽、CPU/RAM、磁碟/ZFS、服務健康</td><td><code>system.summary</code>、<code>system.resources</code>、<code>storage.health</code>、<code>services.health</code></td><td>Read</td></tr><tr><td>開發</td><td>Docker 清單、Container 日誌、Runner 狀態、CI 狀態</td><td><code>docker.list</code>、<code>docker.logs</code>、<code>runner.status</code>、<code>ci.status</code></td><td>Read／依日誌範圍</td></tr><tr><td>UEM</td><td>執行驗收、執行紀錄、MD 下載、取消任務</td><td><code>uem.acceptance</code>、<code>jobs.list</code>、<code>jobs.export</code>、<code>jobs.cancel</code></td><td>Operator／Owner</td></tr></table><h3>HTTP Request Shortcuts 備援設定範例（非 Flutter 正式登入）</h3><ol><li>安裝 HTTP Request Shortcuts（Google Play 或官方 GitHub）。</li><li>新增 Regular Shortcut，名稱「Ubuntu 系統狀態」，Method <code>GET</code>。</li><li>URL：<code>https://uem-api.isee.at/api/v1/system/summary</code>（示意）。</li><li>設定 <code>CF-Access-Client-Id</code>、<code>CF-Access-Client-Secret</code>、<code>Authorization: Bearer ...</code> 等 Header。</li><li>選擇顯示 HTTP 回應；先測試 200、401/403、網路逾時。</li><li>成功後新增 Android 桌面捷徑，並分組為系統、開發、UEM。</li></ol><pre><code>GET https://uem-api.isee.at/api/v1/system/summary
+CF-Access-Client-Id: &lt;CLIENT_ID&gt;
+CF-Access-Client-Secret: &lt;CLIENT_SECRET&gt;
+Authorization: Bearer &lt;UEM_TOKEN&gt;
+Accept: application/json</code></pre><p class="small">實際 UI、變數安全儲存、檔案下載及多步驟輪詢，需依安裝版本在 Android 13 真機驗證。不要把 Token 放進分享／匯出的捷徑設定。</p></section><section class="chapter-panel" hidden="" id="cloudflare" role="tabpanel" tabindex="-1"><h2>05｜Cloudflare Tunnel 與 Access</h2><table><tr><th>項目</th><th>規劃值</th></tr><tr><td>Hostname</td><td><code>uem-api.isee.at</code>（待確認 DNS 與路由）</td></tr><tr><td>Origin</td><td><code>http://127.0.0.1:8765</code>（僅當 cloudflared 與 API 位於同一網路命名空間）</td></tr><tr><td>Access App</td><td>Self-hosted application，API 專用，預設拒絕；Service Auth Policy</td></tr><tr><td>Service Token</td><td>每裝置獨立建立，定期輪替，可單獨撤銷</td></tr><tr><td>安全邊界</td><td>Cloudflare 驗證只是第一層；UEM 自身 Token 與角色權限不可省略</td></tr></table><h3>Cloudflare 設定順序</h3><ol><li>盤點現有 Tunnel、DNS、Access Policy、Origin 服務。</li><li>先在 Ubuntu localhost 啟動只讀 API，完成本機測試。</li><li>新增 API 專用 Access Application，設定 Service Auth 及預設拒絕。</li><li>建立獨立 Service Token，儲存於手機安全變數；切勿寫入 Git。</li><li>新增 Tunnel Published Application Route，確保未授權請求被拒絕後才開放使用。</li><li>使用 Android 行動網路測試，避免只在區域網路通過。</li></ol><div class="note warning">如果 cloudflared 在 Docker 容器內，<code>127.0.0.1</code> 指的是容器本身；須依 Docker Network 改用服務名稱或可達位址。也不可直接假設現有 Tunnel 的部署模式。</div><p><strong>Flutter 認證修訂：</strong>正式 App 優先互動式 Cloudflare Access 登入；Service Token 範例僅供隔離測試或受控機器對機器情境，不作為硬編碼於手機 APK 的長期密鑰。365 天長期授權由 UEM 裝置層管理，Access Session 另受 Cloudflare 政策約束。</p></section><section class="chapter-panel" hidden="" id="api" role="tabpanel" tabindex="-1"><h2>06｜API 端點與契約</h2><table><tr><th>Method</th><th>路徑</th><th>功能</th></tr><tr><td>GET</td><td><code>/api/v1/system/summary</code></td><td>系統總覽</td></tr><tr><td>GET</td><td><code>/api/v1/system/resources</code></td><td>CPU/RAM</td></tr><tr><td>GET</td><td><code>/api/v1/storage</code></td><td>磁碟與 ZFS</td></tr><tr><td>GET</td><td><code>/api/v1/docker/containers</code></td><td>容器清單</td></tr><tr><td>GET</td><td><code>/api/v1/runner/status</code></td><td>Runner 狀態</td></tr><tr><td>POST</td><td><code>/api/v1/jobs</code></td><td>建立非同步任務</td></tr><tr><td>GET</td><td><code>/api/v1/jobs/{id}</code></td><td>查詢狀態</td></tr><tr><td>GET</td><td><code>/api/v1/jobs/{id}/output</code></td><td>完整或分段 stdout/stderr</td></tr><tr><td>GET</td><td><code>/api/v1/jobs/{id}/export.md</code></td><td>完整 Markdown 匯出</td></tr><tr><td>POST</td><td><code>/api/v1/jobs/{id}/cancel</code></td><td>取消任務</td></tr></table><h3>建立任務請求</h3><pre><code>POST /api/v1/jobs
+Authorization: Bearer &lt;UEM_TOKEN&gt;
+Idempotency-Key: &lt;UNIQUE_REQUEST_ID&gt;
+Content-Type: application/json
+
+{
+  "action": "uem.acceptance",
+  "parameters": {"profile": "standard"}
+}</code></pre><h3>202 Accepted 回應</h3><pre><code>{
+  "job_id": "job_20261103_001",
+  "status": "queued",
+  "status_url": "/api/v1/jobs/job_20261103_001"
+}</code></pre><h3>回應錯誤標準</h3><table><tr><th>HTTP</th><th>含義</th></tr><tr><td>400 / 422</td><td>格式或參數錯誤</td></tr><tr><td>401 / 403</td><td>未驗證／無權限（Cloudflare 與 UEM 層分別記錄）</td></tr><tr><td>404</td><td>不存在或不可見的 Job</td></tr><tr><td>409</td><td>狀態衝突或不可取消</td></tr><tr><td>429</td><td>限流</td></tr><tr><td>500 / 503</td><td>伺服器或 Worker 暫不可用</td></tr></table><p>對修改系統狀態的 POST 必須驗證 Action ID、參數 Schema、資源歸屬與角色權限。重複請求使用 Idempotency-Key，避免手機重試導致重複執行。</p></section><section class="chapter-panel" hidden="" id="job" role="tabpanel" tabindex="-1"><h2>07｜Job、CLI 執行與 Markdown 輸出</h2><h3>任務狀態</h3><p><code>queued → running → completed / failed / cancelled / timed_out</code>。建立任務後立即回傳 Job ID，手機每 2–5 秒輪詢並設定最大等待時間；手機離線不影響伺服器任務。</p><h3>執行器安全</h3><ul><li>以固定 Action Registry 映射到受審核的執行函式；避免 <code>shell=True</code>、任意拼接字串。</li><li>指定工作目錄、允許的環境變數、執行身分、Timeout、輸出大小及並行數。</li><li>Job 與輸出持久化，支援重啟後恢復狀態；取消時清理子程序樹。</li><li>區分 stdout 與 stderr，保留完整內容及 Exit Code；大輸出使用分段讀取，不直接塞入單一 JSON 回應。</li><li>記錄操作人、裝置、Action、參數摘要、開始結束時間、結果及稽核 ID。</li></ul><h3>.md 匯出唯一格式</h3><pre><code># Ubuntu UEM Execution Report
+
+- Job ID: job_20261103_001
+- Command: docker ps
+- Started: 2026-11-03 14:00:00 +08:00
+- Finished: 2026-11-03 14:00:03 +08:00
+- Status: completed
+- Exit Code: 0
+
+## STDOUT
+
+完整原始標準輸出
+
+## STDERR
+
+完整原始錯誤輸出</code></pre><p>下載 Header：<code>Content-Type: text/markdown; charset=utf-8</code>、<code>Content-Disposition: attachment; filename="uem-job-001.md"</code>、<code>Cache-Control: no-store</code>。匯出應採串流，確保長輸出不被截斷。檔案下載必須再次驗證 Job 存取權限。</p><div class="note warning">目前決策為原始日誌不套用敏感資訊遮罩，因此禁止公開分享下載連結；需權限檢查、下載稽核、保留期限與敏感資訊提示。API JSON 是內部資料傳輸格式，不等於對外提供 .json 下載。</div></section><section class="chapter-panel" hidden="" id="backend" role="tabpanel" tabindex="-1"><h2>08｜後端模組、資料表與重用審查</h2><p>建議目標目錄如下；實際落地時應優先沿用現有 UEM 架構，不強迫重組：</p><pre><code>ubuntu-uem/
+├── web/                # 現有 UEM WebApp
+├── api/
+│   ├── routes/
+│   ├── middleware/
+│   ├── controllers/
+│   └── schemas/
+├── core/
+│   ├── actions/        # 白名單 Action Registry
+│   ├── executor/       # 共用 CLI Worker
+│   ├── jobs/           # 非同步任務
+│   ├── audit/          # 稽核
+│   └── export/         # .md 匯出
+├── tests/
+└── docs/</code></pre><h3>邏輯資料模型（先比對現有表）</h3><table><tr><th>模型</th><th>重要欄位／目的</th></tr><tr><td>api_credentials</td><td>憑證 ID、雜湊、owner、scope、過期與撤銷時間</td></tr><tr><td>action_registry</td><td>Action ID、參數 Schema、權限、Timeout、啟用狀態</td></tr><tr><td>execution_jobs</td><td>Job ID、owner、action、status、時間、Exit Code、idempotency key</td></tr><tr><td>job_outputs</td><td>Job ID、stdout/stderr 儲存位置、長度、校驗值</td></tr><tr><td>audit_events</td><td>actor、device、action、resource、結果、時間、request ID</td></tr></table><p>若現有 UEM 已有資料表，優先擴充，不重複建表；資料庫 Migration 必須可驗證並備份。憑證僅保存雜湊或安全參照，不保存明文。</p><h3>既有程式審查清單</h3><ul><li>Web UI 現有指令如何進入 Controller → Service → Executor？</li><li>是否已有 Job ID、排程、Timeout、取消及 stdout/stderr 分離？</li><li>目前登入、Super 權限與 API Token 如何實作？</li><li>是否已有 MD 匯出及長輸出分段機制？</li><li>是否存在任意命令、Docker Socket 或 sudo 權限風險？</li></ul></section><section class="chapter-panel" hidden="" id="security" role="tabpanel" tabindex="-1"><h2>09｜安全模型與權限矩陣</h2><table><tr><th>操作</th><th>Read Only</th><th>Operator</th><th>Super</th></tr><tr><td>系統資訊</td><td>允許</td><td>允許</td><td>允許</td></tr><tr><td>Docker 狀態</td><td>允許</td><td>允許</td><td>允許</td></tr><tr><td>讀取日誌</td><td>授權範圍</td><td>授權範圍</td><td>允許</td></tr><tr><td>UEM 驗收</td><td>禁止</td><td>允許</td><td>允許</td></tr><tr><td>重啟指定容器</td><td>禁止</td><td>指定服務</td><td>允許（需確認）</td></tr><tr><td>任意 Shell</td><td>禁止</td><td>禁止</td><td>MVP 禁止</td></tr><tr><td>憑證與角色管理</td><td>禁止</td><td>禁止</td><td>允許</td></tr></table><h3>安全強制要求</h3><ol><li>Cloudflare Access、UEM Token、RBAC 三層分工，不可互相取代。</li><li>所有端點伺服器端授權，禁止靠 Android UI 隱藏按鈕當作權限。</li><li>只允許預定 Action；參數驗證、資源 allowlist、禁止路徑穿越與命令注入。</li><li>Token 每裝置獨立、期限、撤銷與輪替；禁止寫入 URL、Git、匯出設定及 log。</li><li>限流、並行數上限、危險操作二次確認、完整 Audit Log。</li><li>API 綁定 localhost 或隔離網路；禁止直接暴露 UEM Origin。</li><li>Super 仍須遵守稽核、危險操作確認與執行限制。</li></ol><p><strong>新增：</strong>每裝置至少 365 天長期授權、短效 API Token、自動輪替、Android Keystore 安全保存、TOTP／Email OTP 二次驗證、遠端撤銷與完整稽核。詳見 09A。</p></section><section class="chapter-panel" hidden="" id="mobile-auth" role="tabpanel" tabindex="-1"><h2>09A｜Flutter Android 長期登入與二次驗證（2026-11-03 修訂）</h2>
+<p><strong>核准需求：</strong>使用者在自己授權的 Android 裝置上，可選擇維持登入至少 365 天；期間不必每次操作都重新登入。這是「裝置長期授權有效期」，不是把固定密鑰寫死在 APK，也不是讓單一 Bearer Token 一年不變。</p>
+<h3>認證架構與憑證保存</h3><table><tr><th>層次</th><th>建議機制</th><th>有效期／限制</th></tr>
+<tr><td>Cloudflare Access</td><td>Flutter 透過系統瀏覽器完成互動式登入；使用 Cloudflare Access 的正式支援登入流程，不將 Service Token 硬編碼於 APK</td><td>Access Session 依 Cloudflare 政策獨立到期；不可假設可保持 365 天免驗證</td></tr>
+<tr><td>UEM 裝置授權</td><td>每裝置獨立長期授權／Refresh Credential，綁定裝置紀錄，伺服器只存雜湊，可撤銷及輪替</td><td><strong>365 天起</strong>（建議可設 365 / 730 天）；輪替時維持有效授權期間，管理者可提前撤銷</td></tr>
+<tr><td>UEM API Access Token</td><td>短效 Bearer Token，自動更新；僅於記憶體中使用，避免寫入一般日誌</td><td>建議 15–60 分鐘；過期後使用裝置授權安全換發</td></tr>
+<tr><td>Android 儲存</td><td>Android Keystore 支援的安全儲存；不可將長期秘密硬編碼於 APK、明文偏好設定、備份或 Git</td><td>憑證以每裝置獨立方式儲存；登出／撤銷後清除</td></tr></table>
+<p><strong>重要邊界：</strong>UEM 的 365 天裝置授權不能繞過 Cloudflare Access 的獨立 Session 期限。若要求整整一年完全不出現 Cloudflare 登入畫面，必須另行設計與審核受保護的 App 專用認證入口，不可用不受控的公開例外路由達成。</p>
+<h3>二次驗證 MFA</h3><ul><li><strong>首選 TOTP：</strong>支援 Google Authenticator、Microsoft Authenticator 等標準 6 位數一次性驗證碼 App；不依賴特定廠商。</li><li><strong>備選 Email OTP：</strong>寄送一次性驗證碼；建議 5 分鐘有效、單次使用、錯誤次數限制、發送頻率限制及寄送稽核。</li><li><strong>觸發時機：</strong>首次綁定裝置、重新綁定、帳號／安全設定變更、敏感操作與風險異常時要求 MFA；一般只讀操作可維持長期登入。</li><li><strong>復原：</strong>提供一次性備援碼與管理者撤銷遺失裝置的能力；變更 MFA 方式須再次驗證。</li></ul>
+<h3>建議登入流程</h3><ol><li>Flutter App 開啟系統瀏覽器，完成 Cloudflare Access 互動登入。</li><li>UEM 帳號登入後，首次註冊裝置必須完成 TOTP 或 Email OTP 驗證。</li><li>後端建立該裝置 365 天（或管理者設定期限）授權；手機將長期憑證安全保存。</li><li>一般 API 使用 15–60 分鐘短效 Token；到期時在符合 Cloudflare 政策前提下自動換發。</li><li>遺失手機、登出、停用帳號、憑證洩漏或高風險事件，伺服器可立即撤銷裝置授權。</li></ol>
+<h3>新增 API 與資料契約（提案，需對照現有 UEM 程式）</h3><table><tr><th>端點／模型</th><th>用途</th></tr><tr><td><code>POST /api/v1/auth/devices/enroll</code></td><td>MFA 驗證後建立長期裝置授權</td></tr><tr><td><code>POST /api/v1/auth/token/refresh</code></td><td>輪替 Refresh Credential、核發短效 Token，重用偵測與撤銷</td></tr><tr><td><code>GET /api/v1/auth/devices</code></td><td>查看已授權裝置及到期日</td></tr><tr><td><code>DELETE /api/v1/auth/devices/{id}</code></td><td>撤銷指定裝置</td></tr><tr><td><code>device_credentials</code></td><td>device_id、owner、credential_hash、expires_at、revoked_at、last_used_at、rotation metadata</td></tr><tr><td><code>mfa_factors / mfa_challenges</code></td><td>TOTP 安全保存、Email OTP 雜湊、使用次數與過期控制</td></tr></table>
+<h3>新增驗收條件</h3><ul><li>授權裝置有效期設定為至少 365 天，普通使用不需每次輸入密碼。</li><li>短效 Token 過期可正常更新，且不超越 Cloudflare Access 的獨立政策。</li><li>首次註冊裝置需通過 TOTP 或 Email OTP；過期、重放、暴力猜測均拒絕。</li><li>同帳號不同裝置的長期憑證不同，可單獨撤銷。</li><li>長期憑證不得出現在 APK、原始碼、一般日誌、URL 或 Android 明文儲存。</li><li>裝置遺失／帳號停用後，伺服器端立即拒絕 Refresh；舊短效 Token 需依撤銷策略失效。</li></ul></section><section class="chapter-panel" hidden="" id="deployment" role="tabpanel" tabindex="-1"><h2>10｜部署、測試環境與回復方案</h2><h3>部署順序</h3><ol><li>取得現有 UEM v1.01 基線：Git commit、配置、容器與資料庫結構。</li><li>備份配置及 DB；建立獨立開發分支與測試服務。</li><li>完成共用 API 與 Worker，先測試 localhost，不接公開 Tunnel。</li><li>以獨立 hostname 建立 Cloudflare Access 與 Tunnel 路由。</li><li>Android 行動網路驗證；檢查未授權、斷線、重試、超時。</li><li>回歸 WebApp，確認不影響既有 UEM 驗收。</li><li>驗收通過後才逐步啟用寫入操作，保留回復方案。</li></ol><h3>回復機制</h3><ul><li>關閉 API Access 或移除 API Hostname 即可停止 Android 外部入口，不影響原 WebApp 路由。</li><li>服務部署採版本化配置；保留上一版可回復映像／Git commit。</li><li>DB 變更先備份，優先採相容性 Migration；避免直接刪除既有欄位。</li><li>Worker 停用時，保留 Job 紀錄並正確標記中斷或待恢復狀態。</li></ul></section><section class="chapter-panel" hidden="" id="acceptance" role="tabpanel" tabindex="-1"><h2>11｜完整驗收規格</h2><ul class="check"><li><input type="checkbox"/>未帶 Cloudflare 憑證時拒絕請求</li><li><input type="checkbox"/>Cloudflare 有效但 UEM Token 無效時拒絕請求</li><li><input type="checkbox"/>Read Only 無法呼叫寫入／高權限 API</li><li><input type="checkbox"/>無法透過任意 Action、命令注入或路徑穿越執行 Shell</li><li><input type="checkbox"/>重複點擊／網路重試不重複建立危險任務</li><li><input type="checkbox"/>Android 13 行動網路可正常查看系統狀態</li><li><input type="checkbox"/>長任務可建立、輪詢、取消與處理 Timeout</li><li><input type="checkbox"/>手機斷線後 Job 仍可查詢與恢復顯示</li><li><input type="checkbox"/>stdout/stderr 與 Exit Code 完整正確</li><li><input type="checkbox"/>超長輸出可分段查看並下載完整 .md</li><li><input type="checkbox"/>未授權者不能下載他人的 Job .md</li><li><input type="checkbox"/>Token 撤銷後失去存取權限</li><li><input type="checkbox"/>WebApp 原功能與驗收流程無回歸問題</li><li><input type="checkbox"/>稽核包含操作者、時間、Action、結果與 Job ID</li><li><input type="checkbox"/>關閉 API 入口後原有 Tunnel 服務正常</li></ul><p class="small">以上勾選狀態僅在本機頁面操作，不會同步到 UEM 或 GitHub。</p><p><strong>新增必驗：</strong>365 天裝置授權、TOTP／Email OTP、Token 輪替與撤銷、Keystore 保護、Cloudflare Session 到期處理、Flutter App 斷線與恢復。</p></section><section class="chapter-panel" hidden="" id="schedule" role="tabpanel" tabindex="-1"><h2>12｜開發批次、交付與時程</h2><table><tr><th>批次</th><th>工作</th><th>交付物</th><th>估計</th></tr><tr><td>A</td><td>現有 UEM 程式／配置審查</td><td>重用性矩陣、風險清單、API 基線</td><td>0.5–1 天</td></tr><tr><td>B</td><td>API Gateway、Token、權限、白名單</td><td>可測試只讀 API、單元測試</td><td>1–2 天</td></tr><tr><td>C</td><td>Job Queue、輸出、MD 匯出</td><td>非同步任務與完整日誌</td><td>1–2 天</td></tr><tr><td>D</td><td>Cloudflare Access、Android 捷徑</td><td>手機真機操作與設定指引</td><td>0.5–1 天</td></tr><tr><td>E</td><td>權限、安全、斷線、回歸驗收</td><td>驗收報告與回復步驟</td><td>1–2 天</td></tr></table><p><strong>總估計：4–8 個工作天</strong>；若現有 UEM 已有成熟 API／Job Queue，可縮短。估計不包含重建 UEM 核心。</p><h3>MVP-1 完成標準</h3><p>Android 桌面點擊「Ubuntu 系統狀態」→ Cloudflare Access 驗證 → UEM API 驗證 → 回傳真實 CPU/RAM/磁碟 → 手機顯示 → Ubuntu 留下稽核紀錄。這五項成功後再推進 Docker、Runner、UEM 驗收與 MD 匯出。</p><p><strong>修訂開發順序：</strong>先完成 HTTP API 與授權驗收 → 共用 Action / Job / MD 匯出 → 裝置長期授權與 MFA → Flutter Android MVP → Cloudflare 與 Android 真機端到端驗收。原 4–8 天僅適用於 Shortcuts 方案，不再作為含 Flutter 與 MFA 的總工期估計。</p></section><section class="chapter-panel" hidden="" id="next" role="tabpanel" tabindex="-1"><h2>13｜立即執行的下一步</h2><p>先在 Ubuntu 執行以下<strong>唯讀盤點</strong>，檢查現有服務與 UEM 專案位置。輸出貼回前請移除 Token、帳號密碼及其他機密。</p><pre><code>echo '===== CLOUDFLARED ====='
+systemctl is-active cloudflared 2&gt;/dev/null || true
+pgrep -a cloudflared | sed -E 's/(--token[= ]+)[^ ]+/\1[REDACTED]/g'
+
+echo '===== LISTENING PORTS ====='
+sudo ss -lntp
+
+echo '===== UEM RELATED PROCESSES ====='
+ps -eo pid,comm,args | grep -Ei 'uem|uvicorn|gunicorn|node|php-fpm' | grep -v grep | cut -c1-180
+
+echo '===== DOCKER SERVICES ====='
+docker ps --format 'table {{.Names}}\t{{.Image}}\t{{.Ports}}' 2&gt;/dev/null
+
+echo '===== UEM PROJECT DIRECTORIES ====='
+find /opt /srv /var/www "$HOME" -maxdepth 3 -type d \
+  \( -iname '*uem*' -o -iname '*ubuntu-admin*' \) \
+  2&gt;/dev/null | head -50</code></pre><div class="note">實際開發前，應先完成 UEM v1.01 原始碼審查與部署確認。此計畫書不包含已完成開發或已部署的聲明。</div></section><section class="chapter-panel" hidden="" id="references" role="tabpanel" tabindex="-1"><h2>14｜參考文件</h2><ul><li><a href="https://developers.cloudflare.com/cloudflare-one/access-controls/service-credentials/service-tokens/">Cloudflare Access Service Tokens</a></li><li><a href="https://developers.cloudflare.com/cloudflare-one/applications/configure-apps/self-hosted-apps/">Cloudflare Self-hosted Applications</a></li><li><a href="https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/">Cloudflare Tunnel / Connect Networks</a></li><li><a href="https://http-shortcuts.rmy.ch/documentation">HTTP Request Shortcuts Documentation</a></li><li><a href="https://github.com/Waboodoo/HTTP-Shortcuts">HTTP Request Shortcuts GitHub</a></li></ul><p class="small">文件版本：規劃稿 1.0｜2026-11-03。示例網域、Job ID、API 路徑與回傳資料均屬設計提案，需依現有 UEM 系統確認後實作。</p></section><section class="chapter-panel" hidden="" id="audit" role="tabpanel" tabindex="-1"><h2>15｜Claude 交接原文問題與完成度判讀</h2>
+<p><strong>來源分層：</strong>下列「Claude 回報」依據 2026-11-03 交接文件及使用者轉述；「本次技術判斷」為後續審查建議，不代表已修復或完成實機驗證。</p>
+<table><tr><th>範圍</th><th>Claude 回報／證據</th><th>本次判讀與行動</th></tr>
+<tr><td>v1.01 完成度</td><td>約 70%，有 PHP Web/API 32 路由、11 張 SQLite 表、Task/Run、idempotency、active_key、Worker、Root Broker、UEM Adapter</td><td>70% 為估算，不是驗收通過率；建立檔案／API／DB／流程追蹤矩陣，分別標註 CODE_EXISTS、UNIT_PASS、INTEGRATION_PASS、HOST_UNVERIFIED、BLOCKED</td></tr>
+<tr><td>v1.02 新增部分</td><td>約 0%；/api/v1、Bearer、裝置授權、MFA、Action Registry、Flutter 都不存在</td><td>不將 Rev2 的設計稿當成已完成；優先完成認證及 API 契約，Flutter 於後端穩定後開始</td></tr>
+<tr><td>PHP 安全測試</td><td>security 42/42 PASS；log_export、UTF-8 boundary PASS</td><td>證明指定測試案例通過，不等於部署安全或全系統安全</td></tr>
+<tr><td>Recovery diagnostics</td><td>測試 line 78：cannot start a transaction within a transaction</td><td>先追查是測試 setup、共用 PDO connection，還是正式交易路徑巢狀 BEGIN；不得單純刪除斷言使測試變綠</td></tr>
+<tr><td>Python 測試</td><td>執行中連線中斷；懷疑 process-group kill 波及測試執行器，未確認</td><td>標記未驗證；使用獨立 process group／session 與外部 watchdog，測試隔離且禁止殺到父程序</td></tr>
+<tr><td>Broker</td><td>原始測試 Mock 尚未永久修復，先前僅暫時修正版通過</td><td>把修正回存原始測試，並進行真正 Ubuntu 隔離環境 root broker E2E</td></tr>
+<tr><td>stdout / stderr</td><td>Worker 目前合併 output.log</td><td>應分流、保留 exit code／時間戳／完整性；維持既有讀取者相容或提供 migration 過渡</td></tr></table>
+<h3>Claude 原始五項問題（完整保留技術意義）</h3>
+<ol><li><strong>瀏覽器專用認證：</strong>目前 session cookie＋CSRF＋Cloudflare Access JWT，無 Flutter Bearer Token、365／730 天裝置憑證、撤銷／輪替／重用偵測、TOTP／Email OTP。</li>
+<li><strong>缺 /api/v1 與 Action Registry：</strong>尚無 system.summary、docker.list、jobs.* 等手機契約；須以 Action → 既有 Service::submitRun，不得建立平行 Job Queue／CLI Executor。</li>
+<li><strong>測試與 Broker 不穩定：</strong>PHP recovery 巢狀交易、Python 測試中斷、Broker Mock 只在臨時副本修復。</li>
+<li><strong>SECURITY_REPAIR_STATUS 的 P0 未清：</strong>install/restore 隔離、project_user 權限邊界、孤兒程序、Root Broker 真實 E2E；另有 P1 的 idempotency fingerprint、active_key 版本隔離、SQLite CHECK 等。</li>
+<li><strong>輸出契約不一致：</strong>stdout/stderr 合併，尚未達到分檔、完整 Markdown 匯出、長輸出分段的需求。</li></ol>
+</section><section class="chapter-panel" hidden="" id="responses" role="tabpanel" tabindex="-1"><h2>16｜對 Claude 五大問題的逐項技術回覆</h2>
+<h3>問題 1：Flutter 認證與一年長期登入</h3>
+<p><strong>結論：</strong>採「裝置長期授權＋短效 Access Token＋MFA」而不是把一個不變的密碼或 Cloudflare Service Token 寫死在 APK。365／730 天是裝置授權最長存續政策，仍需支援即時撤銷、失竊後失效與風險再驗證。</p>
+<p><strong>技術說明：</strong>首次登入完成 Cloudflare Access 互動式驗證與 UEM MFA（TOTP 或 Email OTP），由 UEM 簽發裝置專屬、不可預測的 refresh credential。伺服器只存經適當雜湊處理的驗證值、裝置 ID、到期、輪替世代與撤銷狀態；手機使用 Android Keystore 支援的安全儲存。Access Token 僅 15–60 分鐘。每次 refresh 採原子交易，舊憑證失效；偵測已輪替憑證再次使用時，撤銷相關憑證家族並留下稽核。考慮網路重送競態與重複提交，須設計有限且安全的重試語義。</p>
+<p><strong>Cloudflare 關鍵邊界：</strong>Cloudflare Access 的互動式登入 Session 有獨立效期，不能直接等同 UEM 的一年裝置授權；若 Cloudflare 要求重新驗證，App 必須能完成該流程。禁止以客戶端自填的 Cf-Access-Authenticated-User-Email 作為信任依據。對手機使用者不應把共用、長期的 CF Service Token 硬編碼於 APK。</p>
+<h3>問題 2：/api/v1、Action Registry 與現有執行器</h3>
+<p><strong>結論：</strong>擴充現有 PHP Controller/Service，新增版本化路由及認證中介層，Action Registry 第一版以 PHP 常數／設定陣列實作，不另建 action_registry 資料表。</p>
+<p><strong>技術說明：</strong>POST /api/v1/jobs 的 action_id 必須先經伺服器端固定 allowlist、參數 Schema、資源範圍、RBAC、重放防護，再映射到已發布的 Task 版本與既有 Service::submitRun。不可把使用者提交的 action 字串拼成 shell 命令；同一套 Service、鎖、佇列、稽核由 WebApp／Android 共用。既有並發上限維持 1 個 Task。</p>
+<h3>問題 3：PHP 交易與 Python 測試斷線</h3>
+<p><strong>結論：</strong>先定位根因，測試修正與正式程式修正分開紀錄。</p>
+<p><strong>技術說明：</strong>SQLite 不支援在同一連線中直接巢狀 BEGIN；若是業務邏輯確實需要巢狀單元，可評估 SAVEPOINT／RELEASE／ROLLBACK TO，但不可未查明原因就全面改成 SAVEPOINT。Python 子程序測試應各自建立 session/process group，超時只終止受測子樹，外部監督程序不在同一 group；必要時 Docker 隔離、PID namespace、無網路與資源上限。每檔回報 PASS／FAIL／TIMEOUT／CRASH。</p>
+<h3>問題 4：P0 安全修復優先</h3>
+<p><strong>結論：</strong>先清除安全阻塞，再允許對外部署。新的手機 API 不得使 Root Broker、restore 或 Docker 變成未授權的遠端管理入口。</p>
+<p><strong>技術說明：</strong>install 必須盤點對 nginx、PHP-FPM、sudoers、systemd、帳號及目錄權限的影響；restore 要有獨立 app pool／維護模式、DB 使用者清空、WAL checkpoint、備份與回復演練；Broker 驗證 approval token 時效、HMAC、manifest、執行權限、鎖、超時、process group 與 cgroup 的真實行為。沙盒 PASS 不可替代 Ubuntu 隔離主機 E2E。</p>
+<h3>問題 5：stdout/stderr 與 Markdown 輸出</h3>
+<p><strong>結論：</strong>Worker 以兩條獨立輸出通道保存 stdout、stderr；附帶 Exit Code、起訖時間、截斷旗標及校驗資訊。</p>
+<p><strong>技術說明：</strong>stdout/stderr 分開後不保證兩個檔案可以重建原始跨通道的全域順序；若需要順序，另存單調序號事件串流。API 提供有上限的分段讀取；.md 匯出應由授權後的串流端點產生，設定 no-store 與安全檔名，保證特殊 Markdown 字元及大型輸出不造成內容誤解。原始日誌可能含機密，須限制權限、保留期限與下載稽核。</p>
+</section><section class="chapter-panel" hidden="" id="securityrepair" role="tabpanel" tabindex="-1"><h2>17｜P0/P1 安全修復清單與驗收證據</h2>
+<p>依 ZIP 內 <code>SECURITY_REPAIR_STATUS_20261103.md</code>：該檔明言是 incremental patch、不是 release approval。已實作部分包含 Broker approval token 最長 5 分鐘未來有效期、operation timeout 1–3600 秒、逾時終止程序群組並 wait、spawn failure 顯式回報；Installer 預設不自動 apt 安裝；Restore 採 offline-only、明確確認、要求 Worker 停止、拒絕 WAL/SHM、staging＋fsync、保留復原前 DB。這些仍未經正式主機 E2E 驗證。</p>
+<table><tr><th>級別</th><th>未完成問題</th><th>驗收出口</th></tr>
+<tr><td>P0</td><td>專用 App 維護隔離與 rollback</td><td>不影響共用 nginx/FPM/其他服務；有明確停用與復原程序</td></tr>
+<tr><td>P0</td><td>Installer 對共享主機的副作用</td><td>dry-run／preflight 清單；測試帳號、sudoers、systemd、nginx、FPM 變更與回滾</td></tr>
+<tr><td>P0</td><td>project_user 目錄、sudo 權限邊界</td><td>權限矩陣與越權負向測試；禁止跨專案寫入</td></tr>
+<tr><td>P0</td><td>當機／重啟後孤兒程序</td><td>kill -9、重啟、逾時、重複 Worker、鎖恢復及子程序清理壓力測試</td></tr>
+<tr><td>P0</td><td>Root Broker 真實 E2E 鎖／超時</td><td>隔離 Ubuntu 測試主機實際 root step，驗證授權、拒絕、超時與清理</td></tr>
+<tr><td>P0</td><td>Backup / Restore 隔離演練</td><td>WAL checkpoint、並發 reader、crash injection、DB integrity、rollback 全部通過</td></tr>
+<tr><td>P1</td><td>Idempotency request fingerprint、active_key 版本／測試區隔</td><td>相同 key 不同 payload 返回衝突；不同版本及環境不誤互斥</td></tr>
+<tr><td>P1</td><td>跨 Task 版本引用、Task/environment 版本一致性</td><td>已發布版本不可被錯誤引用；測試覆蓋一致性</td></tr>
+<tr><td>P1</td><td>zero-row update、JSON validation、SQLite CHECK</td><td>失敗狀態明確；非法 JSON／資料欄位無法繞過 DB 約束</td></tr>
+<tr><td>P1</td><td>root token 簽發與過期、DB threat model</td><td>有效期邊界、重放、秘密保護、檔案權限及備份風險測試</td></tr>
+<tr><td>P1</td><td>child cleanup stress、preflight、log ordering</td><td>高負載與失敗注入、預檢阻擋、輸出排序契約清楚</td></tr></table>
+<p><strong>禁止條件：</strong>上述 P0 未完成前，不能宣稱 v1.02 可安全上線，也不得直接修改正式 iStudy、EachCore、Cloudflare 路由或資料庫。</p>
+</section><section class="chapter-panel" hidden="" id="b1" role="tabpanel" tabindex="-1"><h2>18｜B1 可執行開發規格、資料表與 API 契約</h2>
+<h3>分段順序（降低一次改動風險）</h3>
+<table><tr><th>批次</th><th>工作</th><th>交付／退出條件</th></tr>
+<tr><td>B1-0</td><td>程式基線、P0 安全修復、PHP/Python 測試穩定化</td><td>問題定位紀錄、原始測試修復、隔離測試結果；無法在沙盒驗證者 HOST_UNVERIFIED</td></tr>
+<tr><td>B1-1</td><td>Migration 002、憑證與 MFA 核心</td><td>migration/rollback rehearsal、過期/撤銷/輪替/重用測試、TOTP/Email OTP 負向案例</td></tr>
+<tr><td>B1-2</td><td>ApiV1、Action Registry、授權矩陣</td><td>只讀 system.summary 與 devices/token；逐步開放 jobs；禁止任意 shell</td></tr>
+<tr><td>B1-3</td><td>Worker stdout/stderr 分流、分段輸出、.md 匯出</td><td>長輸出、二進位／UTF-8 邊界、斷線、取消、Exit Code、權限測試</td></tr>
+<tr><td>B1-4</td><td>localhost HTTP E2E、隔離 Ubuntu Host E2E</td><td>證據齊備後才允許進入 Cloudflare / Flutter 階段</td></tr></table>
+<h3>Migration 002 建議資料契約（須先對照既有 11 張表）</h3>
+<table><tr><th>表</th><th>必要欄位／約束</th><th>注意</th></tr>
+<tr><td>devices</td><td>device_id、owner_id、credential_hash、credential_family_id、expires_at、revoked_at、last_used_at、rotation_counter</td><td>credential_hash unique；不存明文；裝置名稱不當成可信硬體識別</td></tr>
+<tr><td>mfa_factors</td><td>factor_id、owner_id、type、encrypted_secret、enabled_at、revoked_at</td><td>TOTP secret 需應用層 AEAD 加密，金鑰不與 DB 備份同存；不得只 hash TOTP secret</td></tr>
+<tr><td>mfa_challenges</td><td>challenge_id、owner_id、purpose、code_hash、expires_at、attempts、consumed_at</td><td>Email OTP 有效期短、嘗試次數限制、一次性消耗；TOTP 防重放</td></tr>
+<tr><td>access_tokens</td><td>token_id、device_id、token_hash、scope、expires_at、revoked_at</td><td>15–60 分鐘；每次 API 驗證權限與裝置撤銷狀態</td></tr></table>
+<p><strong>原子性：</strong>refresh 時在 SQLite <code>BEGIN IMMEDIATE</code> 交易中驗證當前憑證、撤銷舊 token、建立新 token、增加 rotation_counter、寫入 audit；任何步驟失敗則 rollback。此處是設計要求，不代表既有程式已實作。</p>
+<h3>API v1 首批路由</h3>
+<table><tr><th>Method</th><th>Path</th><th>保護與行為</th></tr>
+<tr><td>POST</td><td>/api/v1/auth/devices/enroll</td><td>Cloudflare 使用者身分＋UEM 初始授權＋MFA，註冊裝置</td></tr>
+<tr><td>POST</td><td>/api/v1/auth/token/refresh</td><td>Cloudflare 有效身分＋裝置憑證；原子輪替與重用偵測</td></tr>
+<tr><td>GET/DELETE</td><td>/api/v1/auth/devices</td><td>僅本人或 Super 可列出／撤銷，撤銷立即生效</td></tr>
+<tr><td>GET</td><td>/api/v1/system/summary</td><td>ReadOnly 以上，限制資訊揭露；優先唯讀</td></tr>
+<tr><td>POST/GET</td><td>/api/v1/jobs</td><td>Action allowlist＋Schema＋權限＋Idempotency-Key；submitRun 共用</td></tr>
+<tr><td>GET</td><td>/api/v1/jobs/{id}/output</td><td>offset/limit、stdout/stderr 分通道、存取控制</td></tr>
+<tr><td>GET</td><td>/api/v1/jobs/{id}/export.md</td><td>授權檢查、串流、no-store、下載稽核</td></tr>
+<tr><td>POST</td><td>/api/v1/jobs/{id}/cancel</td><td>狀態機、權限、競態安全與稽核</td></tr></table>
+<h3>Cloudflare 本機／正式驗收界線</h3>
+<p>localhost 隔離測試可以使用受控測試 JWT 或明確的 test-only 驗證替身，但正式路由必須驗證 Cloudflare Access JWT 簽章、issuer、audience、到期及允許的使用者，並再驗 UEM Bearer／裝置授權。沒有 CF 憑證的正式請求應遭拒絕；不可把「localhost 一律 403」當作本機 API 功能驗收前提，否則無法測試完整流程。正式服務禁止測試驗證替身。</p>
+</section><section class="chapter-panel" hidden="" id="acceptance2" role="tabpanel" tabindex="-1"><h2>19｜詳細驗收矩陣、證據與 GitHub 交接</h2>
+<table><tr><th>測試</th><th>必要案例</th><th>預期結果</th><th>現況</th></tr>
+<tr><td>PHP Security</td><td>42 項既有測試</td><td>42/42 PASS</td><td>Claude 回報 PASS；不是部署驗收</td></tr>
+<tr><td>Recovery</td><td>交易嵌套、rollback、orphan、分頁</td><td>無巢狀 BEGIN 錯誤</td><td>Claude 本次 FAIL</td></tr>
+<tr><td>Python / Broker</td><td>逐檔隔離、逾時、程序群組、真實 root</td><td>全部可重現，不波及執行器</td><td>本次未驗證</td></tr>
+<tr><td>裝置與 MFA</td><td>首次綁定、錯誤 OTP、TOTP 時窗、重放、過期、撤銷</td><td>正確拒絕／稽核</td><td>未開發</td></tr>
+<tr><td>Refresh</td><td>輪替、併發重送、舊憑證重用、裝置撤銷</td><td>單一有效世代，異常撤銷</td><td>未開發</td></tr>
+<tr><td>API Action</td><td>無效 action、命令注入、路徑穿越、角色越權</td><td>403/422；不執行</td><td>未開發</td></tr>
+<tr><td>Job</td><td>併發上限 1、重試、取消、當機恢復、idempotency</td><td>無重複危險任務</td><td>既有局部通過；v1 API 未驗</td></tr>
+<tr><td>Output</td><td>stdout/stderr、Exit Code、超長輸出、Markdown</td><td>完整、權限正確、可下載</td><td>需改造</td></tr>
+<tr><td>Cloudflare</td><td>缺憑證、偽造 Header、無效 JWT、撤銷後</td><td>拒絕；僅授權裝置可進入</td><td>未接正式路由</td></tr>
+<tr><td>Flutter</td><td>Android 13、行動網路、背景／斷線、Keystore、MFA</td><td>365 天授權策略可用、遇風險可再驗證</td><td>未開發</td></tr></table>
+<h3>驗收證據格式</h3><p>每一項須附：Git commit、測試命令、環境、測試時間、PASS/FAIL/SKIP/HOST_UNVERIFIED、stdout/stderr 摘要、失敗根因、修正檔案、回歸結果。禁止只用「CI 綠燈」結案。</p>
+<h3>GitHub 交接</h3><p>專案：<code>ilifeup/DevApp_md</code>；交接來源：<code>UEM_v102_Handoff_20261103.md</code>。Claude 明確回報本次 session 無寫入權限、未更新 GitHub；本 HTML 亦不宣稱已上傳。建議將 Rev3 與交接文件放入 <code>docs/plans/</code>，提交前依專案 <code>AGENTS.md</code> 檢查並執行要求的 NFC 掃描；未取得 AGENTS.md 實際內容前不可宣稱掃描完成。</p>
+<h3>下一階段工作交付規則</h3><p>先 B1-0 修 P0 與測試，再 B1-1/2 認證及 API，接著 B1-3/4 輸出及整合驗收。集中變更、一次完整 ZIP、簡短驗收報告；不操作正式資料庫、不自動合併 PR、不變更正式 Tunnel 路由。Flutter 開發必須等待共用 API 安全基線達標。</p>
+</section><section class="chapter-panel" hidden="" id="b1-evidence" role="tabpanel" tabindex="-1"><h2>20｜B1 原始碼實際狀態與驗證證據（2026-11-04）</h2>
+<p><strong>證據基準：</strong><code>Ubuntu_UEM_B1_Modified_Source_20261104.zip</code>（解壓 304 個檔案）、<code>docs/B1_API_V1_STATUS_20261104.md</code>（Claude 開發回報）、<code>Ubuntu_UEM_B1_Code_Audit_20261104.md</code>（ChatGPT 審查）。原始 Rev3 為規劃基線；本節為新增實作現況，發生矛盾時以本節的具體驗證狀態為準，未驗證者不推定通過。</p>
+<table><tr><th>功能/驗證</th><th>Claude 回報</th><th>ChatGPT 本輪審查</th><th>結論</th></tr>
+<tr><td>PHP Web / Security</td><td>原有 42/42 PASS</td><td>PHP 語法（web、deploy）PASS；Security 42/42 PASS</td><td>已驗證部分通過，非整體 API 驗收</td></tr>
+<tr><td>PHP 日誌</td><td>已擴充</td><td>LogExport 5/5；UTF-8 2/2 PASS</td><td>局部通過</td></tr>
+<tr><td>PHP v1 認證/Recovery</td><td>程式已寫，無 PHP 執行環境</td><td>缺 pdo_sqlite，兩組測試 SKIP</td><td><strong>HOST_UNVERIFIED</strong></td></tr>
+<tr><td>Python / UEM</td><td>42 個模組 PASS；UEM 518 項 PASS</td><td>本輪未重跑</td><td>Claude 回報通過；需可重現證據</td></tr>
+<tr><td>Migration 002</td><td>6 新表，7 項 PASS</td><td>7/7 PASS</td><td>基本遷移通過</td></tr>
+<tr><td>SQL prepare</td><td>64 條 SQL</td><td>64 條 prepare PASS</td><td>只證明 SQL 可準備，不證明 PHP 業務流程</td></tr>
+<tr><td>HTTP API + Worker E2E</td><td>腳本已寫未執行</td><td>未執行</td><td><strong>HOST_UNVERIFIED</strong></td></tr>
+<tr><td>Root Broker / install / restore</td><td>P0 OPEN</td><td>仍無隔離 Ubuntu 真實 E2E</td><td><strong>OPEN / NO-GO</strong></td></tr>
+<tr><td>Flutter / Cloudflare 實接</td><td>未開發</td><td>未驗收</td><td>0% 新客戶端實作</td></tr></table>
+<p><strong>進度表達：</strong>v1.01「約 70%」與 v1.02「約 0%」是前次主觀估計，不能直接沿用於已完成 B1 的新基線；B1 已有程式碼，但不能換算為整體功能驗收百分比。使用「程式已存在／局部測試通過／整合未驗／P0 OPEN」四軸追蹤。</p>
+</section><section class="chapter-panel" hidden="" id="b1-risk" role="tabpanel" tabindex="-1"><h2>21｜B1 七大風險：Claude 現況、ChatGPT 技術回覆與決策</h2>
+<h3>H1｜Refresh 並行重試非冪等（高，程式已證實）</h3><p><strong>程式位置：</strong><code>web/src/DeviceAuth.php::refresh()</code>。前一代 credential 在 grace window 內被接受，但 retry 仍再次生成 credential 並輪替，還撤銷先前 access tokens。當兩個 HTTP 回應亂序抵達，手機可能保存已失效憑證，之後誤觸重用偵測導致裝置被撤銷。<strong>回覆：</strong>同一個 refresh 意圖不得生成多個互相排斥的輪替結果；採原子旋轉、request-id 冪等、加密且短期保存回覆，或在無法安全恢復時 fail-closed 並明示重新綁定。不可直接把 grace 當成安全冪等。</p>
+<h3>H2｜Cloudflare Session 與一年裝置授權不同（高，需求落差）</h3><p><strong>程式位置：</strong><code>ApiV1::handle()</code> 每次呼叫 <code>AccessAuth::identify()</code>。即使裝置授權 365/730 天，Cloudflare Access JWT 逾期仍會拒絕 API（含 refresh）。<strong>回覆：</strong>一年是 UEM 裝置綁定期限，不保證 Cloudflare 365 天免互動。Flutter 應使用系統瀏覽器完成 Access 互動登入、明確處理 session 續期、401/403 差異及失效重驗。不可將共享 Service Token 寫進 APK，也不可為免登入繞過 Access。</p>
+<h3>H3｜DB 與金鑰同份備份（高，保密與可復原性）</h3><p><strong>程式位置：</strong><code>deploy/install.sh</code> 產生 <code>/etc/ubuntu-admin/api_pepper.key</code>、<code>mfa.key</code>；<code>deploy/backup.sh</code> 打包整個設定目錄。<strong>回覆：</strong>須把備份分為資料備份與<strong>獨立加密金鑰復原包</strong>，權限、存放位置、加密金鑰、保管人及演練證據分開；不可僅排除金鑰而沒有復原程序，否則 TOTP 解密或 credential 驗證可能永久失敗。</p>
+<h3>H4｜P0 未結案（部署阻擋）</h3><p>Installer 共用主機副作用、project_user/sudo 邊界、孤兒程序、Root Broker 真實 root E2E、Backup/Restore 演練仍 OPEN。<strong>回覆：</strong>不因 Action Registry 排除 root Action 就視為安全；非 root 任務亦須驗證步驟不能間接提升權限。必須隔離主機完成執行、停止、崩潰與復原測試。</p>
+<h3>H5｜白名單與 Service 權限的跨層一致性（中高）</h3><p><code>ActionRegistry</code> 已限制 task / environment，<code>ApiV1::createJob()</code> 檢查已發布任務、<code>requires_root</code> 與 <code>risk_level</code>，最終委派 <code>Service::submitRun()</code>。<strong>回覆：</strong>須驗證 Action ID → 角色 → Task 版本 → 發布狀態 → 參數 → Service → Worker 的完整約束，包含權限降級、Task 刪改、版本切換與參數注入。</p>
+<h3>H6｜高風險 MFA 重放與操作綁定（中）</h3><p>高風險 Job 要求 <code>confirm=true</code> + <code>mfa_code</code>，但必須確認 <code>DeviceAuth::stepUp()</code> 是否單次使用、綁定裝置與具體操作、具錯誤次數限制。<strong>回覆：</strong>TOTP 本身僅證明某時間窗持有因子，不能直接保證「同一碼只授權某個特定高風險操作」；需 server-side 一次性 challenge 綁定 action、參數摘要、裝置、有效期及消耗狀態。</p>
+<h3>H7｜日誌 byte offset 與檔案替換競爭（中）</h3><p><code>Service::streamPath()</code> 有 symlink 防護，但 <code>exportMd()</code> 在檢查大小、掃 fence、重新開檔期間存在 TOCTOU；<code>streamChunk()</code> 轉 UTF-8 會讓 bytes 與字串長度不同。<strong>回覆：</strong>使用固定檔案描述符或可驗證快照；chunk cursor 定義為原始 byte offset，客戶端只使用伺服器回傳的 <code>next</code>；處理二進位、截斷、輪替與 Unicode 切割邊界。</p>
+<p><strong>優先順序：</strong>H1/H3/H4 阻擋 B1.1 結案；H2 阻擋 Flutter 正式登入設計；H5/H6/H7 須在 API 完整 E2E 前完成測試。所有 H 項均不得因文件更新而改為 CLOSED。</p>
+</section><section class="chapter-panel" hidden="" id="b1-auth" role="tabpanel" tabindex="-1"><h2>22｜手機登入、Token、MFA 與 Refresh 的明確契約</h2>
+<h3>雙層授權與邊界</h3><p>Cloudflare Access JWT 需驗證簽章、issuer、audience、有效期與授權主體；UEM Bearer 需驗證 hash、有效期、裝置撤銷及角色。<strong>兩層均有效</strong>才能執行一般 API。localhost 測試可使用明確的隔離測試簽發者，禁止用任意 <code>CF-Access-Authenticated-User-Email</code> Header 當正式信任來源。分別定義未登入、已過期、MFA 未完成、角色不足與 rate-limit 回應，避免把所有失敗混為一種錯誤。</p>
+<h3>Refresh 安全狀態機（B1.1 必須定案）</h3>
+<ol><li>每次刷新由 App 產生不可猜測的 <code>refresh_request_id</code>，在本次操作的所有重試中保持不變。</li><li>伺服器在 <code>BEGIN IMMEDIATE</code> 交易內驗證裝置狀態、credential generation、期限、replay 與 rate limit。</li><li>首次合法刷新：原子地建立下一代 credential，撤銷前代，產生短效 token，記錄審計及 request-id 對應結果。</li><li>同一 request-id 的重試：僅在受限 TTL、同裝置、同身分、同代數與同請求摘要下重放<strong>同一輪替結果</strong>；若需暫存原始 secret，僅能使用獨立金鑰加密、最短 TTL、嚴格權限與刪除機制，不能存明文。</li><li>不同 request-id 使用已退休 credential：依安全政策視為可疑重放，撤銷或要求重新綁定，並留下可診斷 audit；不得無條件重轉。</li><li>回覆亂序：App 以 generation 和 request-id 原子更新 Keystore 相關安全儲存，不得讓較舊回覆覆蓋新憑證；App 寫入失敗時提供重新綁定復原。</li></ol>
+<p><strong>安全設計取捨：</strong>若不接受伺服器暫存可解密的輪替結果，則應採「只輪替一次、重試返回衝突並提示重新綁定」等保守方案；不得假稱可在不保存結果的情況下重放同一隨機 credential。</p>
+<h3>MFA 與裝置綁定</h3><p>首次裝置綁定採 TOTP 或 Email OTP；Email OTP 尚未實作，不能標為可用。TOTP secret 加密保存並規劃主金鑰輪替；challenge 應有 TTL、錯誤上限、單次消耗、操作摘要綁定、稽核與時鐘偏差政策。高風險操作先驗證 challenge 再以交易消耗；不能只用 <code>confirm</code> 欄位代替授權。失竊裝置須能從既有可信 Web UI 撤銷。</p>
+<h3>Flutter 後續契約</h3><p>Android 13+；Keystore-backed 安全儲存；網路逾時不盲目重送非冪等 Job；Access 重新登入走系統瀏覽器；Token 更新單飛（single-flight），多個 API 同時過期只允許一個刷新；UI 呈現 Job 狀態、stderr、stdout、exit code、Markdown 匯出。</p>
+</section><section class="chapter-panel" hidden="" id="b1-data" role="tabpanel" tabindex="-1"><h2>23｜資料庫、API、Action Registry 與 Worker 端到端契約</h2>
+<h3>Migration 002：六張新增表（以實際 Schema 為準）</h3>
+<table><tr><th>表</th><th>用途</th><th>必驗不變量</th></tr>
+<tr><td><code>devices</code></td><td>裝置識別、credential hash、有效期、撤銷、rotation counter</td><td>唯一裝置、撤銷即失效、代數單調遞增</td></tr>
+<tr><td><code>mfa_factors</code></td><td>TOTP 因子與加密密鑰資料</td><td>不得明文存密鑰；停用/重設可稽核</td></tr>
+<tr><td><code>mfa_challenges</code></td><td>驗證挑戰與單次使用</td><td>TTL、錯誤次數、操作與裝置綁定</td></tr>
+<tr><td><code>access_tokens</code></td><td>短效 Bearer token hash</td><td>過期、撤銷、裝置狀態聯動</td></tr>
+<tr><td><code>device_retired_credentials</code></td><td>已退休 credential 記錄與重放偵測</td><td>重放偵測不誤傷合法同一請求重試</td></tr>
+<tr><td><code>api_rate_limits</code></td><td>登入/刷新/MFA/API 限流</td><td>原子計數、過期清理、不可被輕易繞過</td></tr></table>
+<p><strong>資料庫規則：</strong>保留既有 11 表及 WAL；migration 可在舊 DB 升級並安全重試；外鍵、CHECK、UNIQUE、交易 rollback、鎖等待及 busy_timeout 皆須測試。新增 refresh 冪等狀態若需表或欄位，先在 B1.1 審查 schema，再新增增量 migration（不可偷偷修改已部署的 002）；部署前先備份且演練還原。</p>
+<h3>API → 執行流程</h3>
+<p><code>Cloudflare Access</code> → <code>ApiV1::handle()</code> → JWT/Device Bearer → role / rate limit → <code>ActionRegistry</code> 白名單與 schema → <code>Service::submitRun()</code> → SQLite Task/Run → Python Worker 單 Task → stdout/stderr/exit code → Job 查詢 / output cursor / <code>export.md</code> → Audit。不可另建佇列，不可讓 Action 直接拼接 shell 命令。</p>
+<h3>端點與回應</h3><p><code>auth/devices/enroll</code>、<code>auth/token/refresh</code>、<code>auth/devices</code> GET/DELETE、<code>system/summary</code>、<code>jobs</code> POST/GET、<code>jobs/{id}/output</code>、<code>jobs/{id}/export.md</code>、<code>jobs/{id}/cancel</code>。API JSON 回應可存在，<strong>使用者下載的匯出檔僅 .md</strong>，不得誤解為禁止 JSON API。Job POST 需 idempotency key，HTTP 回應與實際 Run 需可關聯追蹤。</p>
+<h3>Worker 與輸出</h3><p>目前已實作 <code>stdout.log</code>、<code>stderr.log</code>，保留 <code>output.log</code> 相容既有 WebApp。合併日誌跨串流時間順序只能 best-effort；需記錄 exit code、起迄時間、取消原因、timeout、重啟復原及程序組清理。日誌必須防 symlink、路徑穿越、讀取未授權 Run；Markdown export 使用一致性快照或固定 fd，二進位內容須安全編碼/標記。</p>
+</section><section class="chapter-panel" hidden="" id="b1-security" role="tabpanel" tabindex="-1"><h2>24｜P0/P1 安全修復、金鑰備份與部署阻擋條件</h2>
+<table><tr><th>項目</th><th>當前狀態</th><th>結案證據</th></tr>
+<tr><td>P0 install/restore 共享主機副作用</td><td>OPEN</td><td>隔離測試機、前後服務/權限/檔案差異與 rollback</td></tr>
+<tr><td>P0 project_user/sudo 權限邊界</td><td>OPEN</td><td>跨帳號越權拒絕、最小權限、負面測試</td></tr>
+<tr><td>P0 孤兒程序/Crash/Timeout</td><td>OPEN</td><td>程序組/cgroup 終止、當機恢復、無殘留程序</td></tr>
+<tr><td>P0 Root Broker 真 root E2E</td><td>OPEN</td><td>HMAC/manifest/nonce、真執行、重放拒絕、audit</td></tr>
+<tr><td>P0 Backup/Restore 演練</td><td>OPEN</td><td>新機 restore + DB/WAL + 金鑰復原 + 認證功能恢復</td></tr>
+<tr><td>P1 idempotency fingerprint / active_key</td><td>局部修正，未驗收</td><td>相同 key 不同 Task 回 409、版本與環境區隔測試</td></tr>
+<tr><td>P1 SQLite CHECK / 約束</td><td>部分測試通過</td><td>真 DB 升級、失敗回滾與異常資料測試</td></tr></table>
+<h3>金鑰分離與災難復原</h3><ol><li>日常 DB 備份不與 API pepper/MFA master key 明文同包；主金鑰復原材料以獨立加密封裝，與 DB 備份分權限、分儲存位置。</li><li>Installer 建立金鑰須具原子寫入、權限檢查、避免覆蓋既有金鑰、失敗回滾；金鑰輪替須有版本識別與舊資料解密遷移策略。</li><li>若金鑰遺失，必須明確宣告哪些裝置 credential、TOTP 因子需要重新綁定；不能以「備份成功」代替「可還原」。</li><li>每次 restore rehearsal：驗證 SQLite integrity / FK、裝置 refresh、MFA、Job/Audit、金鑰權限及敏感資料不外洩。</li></ol>
+<p><strong>正式部署 NO-GO 條件：</strong>任何 P0 OPEN、PHP API E2E 未驗、Cloudflare JWT 真實驗證未驗、金鑰復原未演練、root/程序隔離未驗，均不得啟用外網寫入 API。<code>api_v1.enabled=false</code> 應保持預設關閉。</p>
+</section><section class="chapter-panel" hidden="" id="b11" role="tabpanel" tabindex="-1"><h2>25｜B1.1 修復批次、依賴順序與可執行驗收</h2>
+<table><tr><th>批次</th><th>實作項目</th><th>退出條件</th></tr>
+<tr><td>B1.1-A</td><td>Refresh request-id / generation 冪等、重用偵測與安全復原</td><td>並發、重送、亂序、丟包、撤銷、過期測試通過</td></tr>
+<tr><td>B1.1-B</td><td>具 pdo_sqlite 的 PHP 8.3/8.4 隔離測試、Recovery 根因驗證</td><td>全部 PHP 測試 PASS；不得 SKIP 假裝 PASS</td></tr>
+<tr><td>B1.1-C</td><td>JWT+Bearer+MFA+Action+Service+Worker HTTP E2E</td><td>curl 全流程與每筆 Audit 對得上；無 CF 身分拒絕</td></tr>
+<tr><td>B1.1-D</td><td>金鑰加密備份、DB/金鑰獨立 restore 演練</td><td>全新隔離主機成功復原與重新登入</td></tr>
+<tr><td>B1.1-E</td><td>Root Broker、sudo、install/restore、孤兒程序 P0</td><td>正負面 E2E、崩潰與權限隔離證據</td></tr>
+<tr><td>B1.1-F</td><td>Task 版本/角色/MFA 重放/日誌 offset 與快照</td><td>API 邊界測試及回歸通過</td></tr>
+<tr><td>B1.1-G</td><td>Cloudflare Access session/Flutter 登入設計確認</td><td>定義 JWT 續期、401/403、互動登入與撤銷 UX</td></tr></table>
+<h3>建議隔離環境驗收命令（先檢查專案實際路徑）</h3>
+<pre>find web deploy -name '*.php' -print0 | xargs -0 -n1 php -l
+php -m | grep -E 'PDO|pdo_sqlite|sqlite3'
+for t in tests/php/*.php; do php "$t" || exit 1; done
+python3 tests/run_python_isolated.py --report /tmp/uem_python_report.json
+python3 tests/db/migration_002_test.py
+python3 tests/db/php_sql_prepare_test.py
+# 先閱讀 tests/e2e/run_e2e.sh，確認無破壞性動作，再在隔離測試機執行</pre>
+<p><strong>環境注意：</strong>Ubuntu 主機可透過獨立一次性 Docker PHP 容器測試 pdo_sqlite，無須安裝 PHP CLI 至主機；不可觸碰現有 iStudy、EachCore 的容器、正式 DB、網路或資料卷。所有 E2E 腳本在執行前先人工檢查權限與副作用。</p>
+<h3>測試矩陣</h3><p>至少涵蓋：JWT 缺失/偽造/過期、Bearer 缺失/過期、裝置撤銷、TOTP 錯誤/重放、Token refresh 同 request-id 併發、不同 request-id 退休 credential 重放、Role/Task 版本切換、idempotency、取消/timeout/crash、stdout/stderr Unicode/二進位、log symlink/替換、restore 及 root Broker。每項記錄 <code>PASS/FAIL/SKIP/HOST_UNVERIFIED</code>，附 commit、環境、命令、日誌與根因。</p>
+</section><section class="chapter-panel" hidden="" id="handoff4" role="tabpanel" tabindex="-1"><h2>26｜後續交付與版本決策紀錄</h2>
+<h3>現行決策</h3><ul><li>保留 Rev3 全部業務需求；B1 已實作的功能不因本文件而自動宣稱驗收完成。</li><li>優先 B1.1 修復，<strong>不先做 Flutter</strong>；Cloudflare 真實外網寫入 API 仍禁用。</li><li>PHP + SQLite WAL + Python Worker 單 Task 佇列；不建立第二套執行器；Android App 與 WebApp 共用 API。</li><li>裝置授權 365/730 天、短效 Bearer、TOTP（Email OTP 待開發）、雙層 Cloudflare/UEM 驗證。</li><li>HTTP Shortcuts 為備援；不硬編碼共享長期 Service Token；所有敏感 Action 經白名單、MFA 與 Audit。</li><li>GitHub <code>ilifeup/DevApp_md</code> 未由本次文件作業更新；禁止未授權開 PR、禁止自動合併、禁止碰正式服務。</li></ul>
+<h3>下一次 Claude / ChatGPT 交接包</h3><p>包含：完整修改後 source ZIP（排除 node_modules/vendor/dist/deb 與秘密）、變更檔清單、Migration 與 rollback 說明、B1.1 測試報告、P0/P1 狀態、API OpenAPI/路由表、金鑰復原手冊、GitHub commit/PR 真實狀態。原始碼 ZIP 不包含任何真實 key、token、DB 備份或使用者資料。</p>
+<h3>引用的本地交接資料</h3><p><code>Ubuntu_UEM_v1.02_Complete_Integration_Plan_Rev3_20261103.html</code>；<code>UEM_v102_Handoff_20261103.md</code>；<code>Ubuntu_UEM_B1_Modified_Source_20261104.zip</code>；<code>Ubuntu_UEM_B1_Code_Audit_20261104.md</code>。本 Rev4 為文件更新，<strong>沒有修改程式碼、執行 Ubuntu 主機部署或提交 GitHub</strong>。</p>
+</section>
+<section class="chapter-panel" hidden="" id="inventory-p0" role="tabpanel" tabindex="-1">
+<h2>27｜新增 P0：UEM 後台設定 → GitHub Ubuntu 主機資訊同步</h2>
+<p><strong>決策日期：2026-11-04。</strong> 本需求為 UEM 後台新增的 P0 功能，與 B1.1 安全修復並行規劃，但上線順序仍須先修完相關安全阻擋項目。此章為 <strong>規格已確定、功能尚未實作</strong>；不能將 GitHub 上三份文件已建立誤認為 UEM 同步功能已完成。</p>
+<div class="note"><strong>GitHub 已完成的實際操作：</strong> 公開儲存庫 <a href="https://github.com/ilifeup/2026Ubuntu_Info">ilifeup/2026Ubuntu_Info</a> 根目錄已新增並重新讀回確認 <code>Rules.md</code>、<code>Software.md</code>、<code>hardware.md</code>。初始資料係根據既有已知設備資訊整理，非 2026-11-04 連線掃描。正式即時同步尚無程式實作或端到端驗收。</div>
+<h3>27.1 功能目標與操作入口</h3>
+<p>UEM 後台「設定 → GitHub 主機資訊」新增獨立頁面（手機／桌面響應式），透過可審核的流程將<strong>經過白名單過濾的軟硬體概覽</strong>更新至預設 GitHub 倉庫，而不是上傳所有主機資訊。</p>
+<table><thead><tr><th>設定項目</th><th>預設與限制</th></tr></thead><tbody>
+<tr><td>目的地儲存庫</td><td><code>ilifeup/2026Ubuntu_Info</code>（可設定但必須有管理者權限及再次安全審查）</td></tr>
+<tr><td>目標分支</td><td><code>main</code>；先讀取 HEAD、讀取目標檔 SHA，衝突時停止提交</td></tr>
+<tr><td>更新檔案</td><td>只能寫 <code>Software.md</code> 和 <code>hardware.md</code>；<code>Rules.md</code> 一律只讀，禁止由同步器修改</td></tr>
+<tr><td>預設同步模式</td><td><strong>手動預覽＋人工核准</strong>；禁止默認啟用自動推送</td></tr>
+<tr><td>安全檢查</td><td>欄位白名單、格式檢查、敏感資訊偵測、關聯風險、diff 人工審查；任一失敗拒絕</td></tr>
+<tr><td>認證</td><td>GitHub fine-grained token 或 GitHub App，僅存主機安全儲存／加密密鑰服務，最小範圍 Contents write；禁止存在 SQLite 明文、Log、Web UI、GitHub</td></tr>
+<tr><td>作用身分</td><td>僅 Super／系統管理者可修改同步設定、核准提交；ReadOnly 可看已脫敏狀態</td></tr>
+<tr><td>本地稽核</td><td>提交者、核准者、提交時間、受控變更摘要、目的地、結果與 Commit SHA；不存原始敏感輸出</td></tr>
+<tr><td>狀態</td><td>NOT_CONFIGURED／READY／PREVIEW_PENDING／APPROVED／PUSHED／BLOCKED／CONFLICT／FAILED／HOST_UNVERIFIED</td></tr>
+</tbody></table>
+<h3>27.2 後台 UI 與完整流程</h3>
+<div class="diagram"><div class="node">後台設定 GitHub 倉庫與憑證（保密）</div><div class="arrow">↓</div><div class="node">執行低權限白名單採集（不執行任意 Shell）</div><div class="arrow">↓</div><div class="node">資料標準化／敏感資訊掃描／關聯風險審查</div><div class="arrow">↓</div><div class="node">讀取 GitHub 版本與 Rules.md → 產生 Diff 預覽</div><div class="arrow">↓</div><div class="node">管理員核准內容與檔案 SHA（一次性核准）</div><div class="arrow">↓</div><div class="node">同一 Job Queue 送出受限 Action → GitHub Contents API</div><div class="arrow">↓</div><div class="node">讀回校驗、保存 Commit SHA、記錄本地 Audit</div></div>
+<p>後台至少提供：連線測試、立即採集、預覽 diff、拒絕／核准、送出 GitHub、歷史紀錄、撤銷憑證／停用。預覽畫面應有「目前 GitHub」與「候選內容」的欄位層級比較，讓管理者明確看到哪些資訊將永久對外公開。</p>
+<p><strong>安全狀態機：</strong> DRAFT → SANITIZED → PREVIEWED → APPROVED → QUEUED → PUSHED/FAILED；任何採集版本、目的地、檔案 SHA、生成內容雜湊變更，都使既有 APPROVED 失效，必須重新核准。避免核准 A 卻提交 B（TOCTOU）。</p>
+<h3>27.3 初始軟硬體清單（僅經公開安全篩選的項目）</h3>
+<table><thead><tr><th>Software.md：軟體</th><th>hardware.md：硬體</th></tr></thead><tbody>
+<tr><td>Ubuntu 26.04 系列、XFCE、X11、LightDM</td><td>Intel Core i5-14400 處理器</td></tr>
+<tr><td>Docker、PostgreSQL、PHP、Python</td><td>Gigabyte B760M 系列主機板</td></tr>
+<tr><td>ZFS、RustDesk、FFmpeg、Chrome</td><td>16 GB DDR4 記憶體</td></tr>
+<tr><td>Git / GitHub 工作流程</td><td>512 GB NVMe SSD；12 TB HDD × 2（ZFS mirror）；550 W 電源</td></tr>
+</tbody></table>
+<p>上列內容出自既有交流紀錄，不能推論全部程序仍在執行。程式實際同步時必須由本機重新採集並判斷資料是否可公開；公開原則優先於資訊完整性。</p>
+</section>
+<section class="chapter-panel" hidden="" id="inventory-security" role="tabpanel" tabindex="-1">
+<h2>28｜Rules.md 最高規則與公開資訊安全分級</h2>
+<p><code>Rules.md</code> 已在 GitHub 根目錄建立，內容適用於 Repository 全部檔案、Commit、Issue、PR、Action、Artifact、機器人與自動更新。GitHub 為 <strong>Public</strong>，故公開的資訊可能被永久保存或交叉分析。此處將其轉為 UEM 程式必須<strong>強制落實</strong>的伺服器端安全條件，而不是只寫文字警告。</p>
+<table><thead><tr><th>資料類別</th><th>判定</th><th>範例／處理方式</th></tr></thead><tbody>
+<tr><td>低風險概略資產</td><td>可候選，仍需審核</td><td>CPU 型號、RAM 容量、硬碟總容量、OS 主要版本、軟體大類</td></tr>
+<tr><td>機密與認證</td><td>一律禁止</td><td>Key、Token、密碼、TOTP Secret、Cookie、憑證、資料庫 DSN、備份密碼</td></tr>
+<tr><td>網路與服務拓樸</td><td>一律禁止</td><td>IP、網域、內網路徑、埠、MAC、Tunnel ID、Cloudflare audience、SSH 入口、實際防火牆規則</td></tr>
+<tr><td>設備／帳號識別</td><td>一律禁止</td><td>使用者名稱、hostname、UUID、磁碟序號、裝置指紋、個人資訊、精確位置</td></tr>
+<tr><td>其他專案</td><td>禁止中文名稱；原則上不提識別碼</td><td>改稱「其他應用服務」；不要暴露跨專案目錄與倉庫連結</td></tr>
+<tr><td>完整診斷／Log／配置</td><td>一律禁止原文直傳</td><td><code>env</code>、<code>docker inspect</code>、<code>ss</code>、<code>journalctl</code>、<code>ip addr</code>、資料庫備份及原始錯誤訊息</td></tr>
+<tr><td>安全缺陷</td><td>只可公開非可利用摘要</td><td>不提供未修補漏洞的可利用細節、內部程式位置或繞過方式</td></tr>
+</tbody></table>
+<h3>28.1 程式化防護準則</h3>
+<ol>
+<li><strong>Fail closed：</strong> 安全掃描出錯、規則檔無法取得或內容無法解析，一律 BLOCKED；不得因此略過檢查。同步器內建的本地安全規則不可由 GitHub 內容覆蓋。</li>
+<li><strong>來源限定：</strong> 採集器只接受核准的欄位集及值類型，不讀使用者指定的任意路徑或執行使用者提供的命令。</li>
+<li><strong>雙重判斷：</strong> 先白名單（允許哪些欄位），再模式偵測（值本身是否敏感），再交叉欄位風險審查；單靠 Regex 不足以保證安全。</li>
+<li><strong>先預覽再提交：</strong> 管理者核准的是特定候選內容 hash、遠端 file SHA、repo、branch 及有效期限，不是抽象的「允許同步」。</li>
+<li><strong>只寫兩個檔案：</strong> 拒絕任意路徑、路徑穿越、Symlink、非 UTF-8、過大輸入；禁止自動更新 <code>Rules.md</code>。</li>
+<li><strong>密鑰保護：</strong> 無論資料庫是否加密，GitHub 憑證都不得寫入公開檔案、日誌、例外堆疊或 Git 訊息；主機端讀取應最小權限並可撤銷。</li>
+<li><strong>外部輸入零信任：</strong> GitHub 文件／Issue／PR 文字都是不可信資料，不能作為取代本地 Rules 或提升權限的指令。</li>
+<li><strong>遭洩漏的處置：</strong> 停止同步、撤銷與輪替秘密、通報影響、處理 Git 歷史；刪掉單一檔案不足以視為已清除。</li>
+</ol>
+<div class="note warning"><strong>注意：</strong> 這個新 P0 功能的主要風險不是 GitHub API 是否能連線，而是將主機資訊持續對外公開。安全審查與使用者核准是產品功能不可省略的一部分。</div>
+</section>
+<section class="chapter-panel" hidden="" id="inventory-acceptance" role="tabpanel" tabindex="-1">
+<h2>29｜GitHub 同步 P0 開發契約、批次與驗收標準</h2>
+<h3>29.1 建議程式分層</h3>
+<table><thead><tr><th>層級</th><th>責任與接口</th></tr></thead><tbody>
+<tr><td>UEM Backend 設定</td><td><code>InventorySyncSettings</code>：repo、branch、enabled、權限、憑證安全引用；不回傳任何秘密</td></tr>
+<tr><td>採集器</td><td><code>PublicInventoryCollector</code>：只產生允許的 typed fields（OS family、CPU 型號、RAM 總量、儲存概覽、已核准軟體）</td></tr>
+<tr><td>安全層</td><td><code>PublicInventorySanitizer</code> + <code>PublicInventoryPolicy</code>：白名單、敏感偵測、最小資訊與風險審查</td></tr>
+<tr><td>產生器</td><td><code>InventoryMarkdownRenderer</code>：固定模板生成 Software.md / hardware.md；拒絕動態 Markdown 原文插入</td></tr>
+<tr><td>GitHub Adapter</td><td><code>GitHubContentsAdapter</code>：GET、受限 PUT、SHA CAS、讀回比對、錯誤分類與節流</td></tr>
+<tr><td>執行核心</td><td>既有 <code>Action Registry → Service::submitRun → SQLite → Python Worker</code>；仍維持最多 1 個 Task，禁止新佇列</td></tr>
+<tr><td>稽核</td><td>既有本地 Audit：request-id、內容摘要雜湊、操作角色、核准版本、送出結果、Commit SHA</td></tr>
+</tbody></table>
+<h3>29.2 建議 API（需對照實際 B1.1 身分驗證後實作）</h3>
+<table><thead><tr><th>端點／方法</th><th>功能／角色</th></tr></thead><tbody>
+<tr><td>GET <code>/api/v1/inventory/github/settings</code></td><td>讀取非機密設定及狀態；ReadOnly+</td></tr>
+<tr><td>PUT <code>/api/v1/inventory/github/settings</code></td><td>設定 repo/branch/安全憑證引用；Super，MFA</td></tr>
+<tr><td>POST <code>/api/v1/inventory/github/collect</code></td><td>執行安全白名單採集，產生候選摘要；Operator+</td></tr>
+<tr><td>POST <code>/api/v1/inventory/github/preview</code></td><td>安全檢查＋讀取遠端 SHA＋回傳候選 diff；Operator+</td></tr>
+<tr><td>POST <code>/api/v1/inventory/github/approve</code></td><td>核准候選內容 hash＋遠端 SHA；Super，重新驗證 MFA</td></tr>
+<tr><td>POST <code>/api/v1/inventory/github/push</code></td><td>提交已核准快照；Super，Action 白名單，限流與冪等</td></tr>
+<tr><td>GET <code>/api/v1/inventory/github/history</code></td><td>脫敏後狀態與 Commit SHA；ReadOnly+</td></tr>
+</tbody></table>
+<h3>29.3 SQLite 與執行語義</h3>
+<p>優先重用既有 Task/Run/Audit 與設定存儲。若確實需要長期保存候選內容和審批狀態，才考慮最小化新表 <code>inventory_publish_requests</code>，欄位包括 request_id、actor_id、repo、branch、file_hashes、remote_blob_shas、approval_expires_at、state、commit_sha、timestamps；未通過安全審查的原始輸出<strong>不落庫</strong>。所有 Approval、Push 及 State 更新在本地交易中必須保證正確性；GitHub 是外部副作用，不可假設本地 SQLite 交易能回滾遠端 Commit。提交後失去連線時應先用 request-id 與遠端 SHA／內容 hash 查核，不能盲目重送。</p>
+<h3>29.4 批次安排與驗收出口</h3>
+<table><thead><tr><th>批次</th><th>內容</th><th>驗收條件</th></tr></thead><tbody>
+<tr><td>P0-INV-A</td><td>後台設定、白名單採集、固定 Markdown 模板、測試假資料</td><td>只可輸出核准欄位，敏感測資 100% BLOCKED</td></tr>
+<tr><td>P0-INV-B</td><td>GitHub 權限、安全憑證存放、GET／預覽 diff、人工核准流程</td><td>無授權 403、token 不外洩、核准 hash 綁定遠端 SHA</td></tr>
+<tr><td>P0-INV-C</td><td>單一 Task Queue 推送、SHA CAS、斷線安全重試、稽核</td><td>競態不覆寫、不重複發布、實際 Commit SHA 讀回一致</td></tr>
+<tr><td>P0-INV-D</td><td>手機 Chrome 響應式 UI、安全與回歸測試、主機實測</td><td>權限／失敗／撤銷／差異／斷線／超時／還原場景全部通過</td></tr>
+</tbody></table>
+<p><strong>必要負向測試：</strong> Token 缺失、錯誤權限、無效 repo、Rules.md 被修改、敏感欄位偽裝、超長值、任意 Markdown 注入、路徑穿越、未知欄位、脫敏器故障、GitHub 409/422/429、併發提交、網路斷線、內容與審核不一致、失敗重試、時鐘偏差、儲存媒體不足、Job Crash。任何安全檢查失敗均不得發布。</p>
+<p><strong>正式上線門檻：</strong> 先完成 B1.1 PHP 認證與 Root Broker 等既有 P0 安全阻擋，再完成 P0-INV-A～D 並於隔離 Ubuntu 主機驗收；不得因三份 GitHub 文件已經建立就跳過程式驗收。文件本身亦應保持公開最小資訊的政策。</p>
+</section>
+<section class="chapter-panel" hidden="" id="inventory-p1" role="tabpanel" tabindex="-1">
+<h2>30｜新增 P1：目錄／檔案盤點、Markdown 報告與安全掃描</h2>
+<p><strong>新核准需求：</strong>在 UEM 後台由管理員指定已授權掃描範圍，以<strong>只讀式</strong>方式分析目錄／檔案中繼資料，產出可下載、可預覽、可審核的 Markdown；經授權同步至私人 GitHub 儲存庫。此需求屬 P1，不能阻擋既有 P0 修復及手機登入驗收。</p>
+<p><strong>當前事實：</strong>2026-11-04 GitHub API 回報 <code>ilifeup/2026Ubuntu_Info</code> 為 <strong>private</strong>。上傳時必須重新查詢並在離線、查詢失敗、轉公開、權限不足時拒絕推送。先前 Rev5 記載公開倉庫屬歷史狀態，以下最新規則優先。</p>
+<h3>30.1 後台 UI：盤點設定與報告</h3>
+<table><thead><tr><th>項目</th><th>P1 規格</th></tr></thead><tbody>
+<tr><td>入口</td><td>UEM 後台 → 儲存與檔案 → 目錄／檔案盤點（僅管理員）</td></tr>
+<tr><td>掃描範圍</td><td>只允許後台預先核准的資料根目錄；不得由 API 傳入任意絕對路徑，選擇以不透明 scope ID 實現</td></tr>
+<tr><td>列出欄位</td><td>相對路徑（敏感時匿名）、型別、byte 大小、mtime（可降精度）、所屬掃描批次、狀態、可疑原因與備註</td></tr>
+<tr><td>容量彙整</td><td>各子目錄總量、檔案數、大小區間、近似使用率；清楚標示硬連結與稀疏檔案造成的估計差異</td></tr>
+<tr><td>掃描選項</td><td>深度、檔案筆數、單次時間、讀取 I/O 與輸出大小硬限制，預設排除符號連結和其他檔案系統</td></tr>
+<tr><td>報告</td><td>摘要、檔案類別、候選項目、風險與不確定性、排除統計、錯誤項、掃描結果指紋，Markdown 下載及差異比對</td></tr>
+<tr><td>GitHub</td><td>報告先在本機進行脫敏與 Preview，人工核准後上傳至私有倉庫指定子目錄；不可直傳原始掃描結果</td></tr>
+</tbody></table>
+<h3>30.2 限制與拒絕條件</h3>
+<ul>
+<li>絕不默認掃描根目錄 <code>/</code>、系統、帳號、容器儲存、憑證、資料庫正式資料、部署目錄及唯一備份；禁止掃描 <code>/proc</code>、<code>/sys</code>、<code>/dev</code>、<code>/run</code> 等虛擬檔案系統。</li>
+<li>安全採集：使用 <code>lstat</code> 或等效不跟隨連結的檔案系統 API，固定 root dirfd、拒絕 symlink、使用檔案系統 ID 避免跨 mount；檔案遍歷需防 TOCTOU。</li>
+<li>預設只讀取中繼資料、不讀取檔案內容。重複檔案的 SHA-256 比對為後續擴充，須由管理員另行授權並限制 I/O；**同名、相同大小或近似日期不是刪除依據**。</li>
+<li>檔名可能本身含機密或個資：本地顯示受 RBAC 控制；GitHub 版預設匿名／分組並省略敏感路徑。任何排除或紅線檢測失敗時拒絕上傳。</li>
+<li>掃描遇到未掛載、路徑更動、權限不足、symlink、硬連結、開啟中的檔案或檔案系統錯誤，應標示 <code>unverified</code>，不得將未完整掃描的範圍視為空資料夾。</li>
+</ul>
+<h3>30.3 Markdown 報告格式（建議）</h3>
+<pre>inventory/YYYY-MM-DD/snapshot-summary.md
+# Ubuntu File Inventory (Sanitized)
+- Scan ID: opaque ID
+- Scope: approved area alias
+- Outcome: complete | partial | failed
+- Timestamp: UTC ISO-8601
+- Totals: files / directories / bytes / excluded / errors
+- Changed since previous snapshot
+- Candidate cleanup: evidence + risk + verification status
+- Human approval: approved / rejected / not-submitted
+# No secrets, raw paths, executable commands, or raw scan logs</pre>
+<p>GitHub 僅存已核准的摘要與受限欄位。細節、完整路徑、未脫敏檔名、稽核與備份維持本機存放，並設定保留期。</p>
+</section><section class="chapter-panel" hidden="" id="cleanup-p1" role="tabpanel" tabindex="-1">
+<h2>31｜新增 P1：建議刪除之目錄／檔案與安全指令預覽</h2>
+<p><strong>功能範圍：</strong>本階段產生清理<strong>建議與人工操作指令預覽</strong>，並附風險、理由、容量估算、相依關係與回復方案。<strong>不提供自動刪除排程，不讓 API 直接執行掃描結果產生的命令。</strong></p>
+<h3>31.1 候選清理分級（證據不足不得給刪除指令）</h3>
+<table><thead><tr><th>等級</th><th>典型情形</th><th>系統動作</th></tr></thead><tbody>
+<tr><td>S0 不可清理</td><td>系統服務、活躍程序、資料庫、專案正式資料、憑證、唯一備份、特殊裝置、掛載點、符號連結不明路徑</td><td>封鎖清理與指令生成</td></tr>
+<tr><td>S1 人工複核</td><td>用途不明、久未變更但可能仍被使用、單份媒體、可疑大型檔案</td><td>僅提供盤點及調查依據</td></tr>
+<tr><td>S2 建議清理</td><td>經確認為可重建的暫存、過期中間產物、可證明的重複副本且原檔／備份存在</td><td>提出節省量與風險；產出本地可控的指令預覽</td></tr>
+<tr><td>S3 已核准隔離</td><td>管理員逐項複核，來源／目標／大小／mtime／inode 等再次符合，備份與回復方案已驗證</td><td>優先移至同一檔案系統的受控隔離區或回收機制，後續依保留期清理</td></tr>
+</tbody></table>
+<h3>31.2 指令產生原則</h3>
+<ul>
+<li>提供「確認與查核命令」及「隔離／回收建議」兩段；範例僅用虛擬路徑，不包含實機操作目標。</li>
+<li>指令預覽需針對<strong>單一已選項目</strong>，展示固定參數及 shell-escaped 路徑；實際執行不能交由 shell 字串解譯，必須採受限工具、固定 argv 與再次驗證的檔案描述符。</li>
+<li>允許的輔助指令類型包括 <code>stat -- &lt;approved-file&gt;</code>、<code>du -sh -- &lt;approved-file&gt;</code>；安全回收須查驗支援的回收機制或使用專屬隔離區。</li>
+<li>禁止提供萬用字元、遞迴的 <code>rm -rf</code>、對已掛載或服務使用中的路徑做批次刪除；不得因名稱包含 <code>tmp</code>、<code>old</code> 或「backup」就判定可刪。</li>
+<li>刪除與盤點身分權限分離；如未來實作執行功能，仍須高風險 MFA、雙步驟確認、路徑指紋核對、明確容量上限、可回復性與稽核，且不得繞過 Root Broker 安全契約。</li>
+</ul>
+<h3>31.3 TOCTOU 與回復策略</h3>
+<p>從掃描到清理可能經過數小時。指令生成時應重新 <code>lstat</code> / dirfd 驗證 inode、device、file type、mtime、size、路徑仍位於授權範圍及未跨 mount；變更則要求重掃。隔離須記錄原位置信息、保留期、SHA-256（如已合法讀取）、操作者、回復操作和結果。刪除唯一副本及 UEM 自身檔案一律禁止。</p>
+</section><section class="chapter-panel" hidden="" id="github-p1" role="tabpanel" tabindex="-1">
+<h2>32｜P1 GitHub 同步契約、程式進度、開發批次與正式驗收</h2>
+<h3>32.1 GitHub 私人倉庫及安全控制</h3>
+<p>目標：<code>ilifeup/2026Ubuntu_Info</code>，GitHub API 2026-11-04 確認為 Private；<strong>每次提交都必須重新確認</strong>。同步僅允許既定 <code>inventory/</code> 目錄下經白名單產生的 Markdown；現有 <code>Rules.md</code> 必須由管理員明確核准才能改。不可把機密、真實可執行刪除指令、未匿名的路徑或私有材料寫入 GitHub；私人倉庫仍有授權外洩及誤公開風險。</p>
+<h3>32.2 後端架構與 API（規劃，未實作）</h3>
+<table><thead><tr><th>層級</th><th>建議設計</th></tr></thead><tbody>
+<tr><td>UI</td><td>新增「盤點設定」「結果」「清理候選」「GitHub 預覽與同步紀錄」Tabs，含行動瀏覽器響應式顯示</td></tr>
+<tr><td>API</td><td>規劃 <code>/api/v1/inventory/scopes</code>、<code>/scans</code>、<code>/scans/{id}</code>、<code>/recommendations</code>、<code>/exports/preview</code>、<code>/exports/publish</code>；實作前需對照 B1 認證與授權契約</td></tr>
+<tr><td>Job</td><td>使用現有 SQLite WAL <code>jobs</code> 及單一 Worker，最多同時執行 1 Task；不新增第二套調度引擎</td></tr>
+<tr><td>DB</td><td>規劃 <code>inventory_scopes</code>、<code>inventory_scans</code>、<code>inventory_entries</code>、<code>inventory_recommendations</code>、<code>inventory_publish_attempts</code>；schema 經 migration 實作並測試外鍵、索引、回滾與升級</td></tr>
+<tr><td>Executor</td><td>固定 Action Registry 的 <code>inventory.scan</code>、<code>inventory.report</code>、<code>inventory.publish</code>；禁止 API 執行使用者輸入的 shell 字串</td></tr>
+<tr><td>權限</td><td>只有授權角色可盤點；只有管理者可批准 GitHub 發布／清理建議；不提供遠端刪除 API</td></tr>
+</tbody></table>
+<h3>32.3 P1 開發批次</h3>
+<table><thead><tr><th>批次</th><th>交付內容</th><th>驗收出口</th></tr></thead><tbody>
+<tr><td>P1-FILE-A</td><td>掃描 scope 白名單、非跟隨式遍歷、I/O 限制、SQLite Schema、唯讀 Worker</td><td>symlink、跨 mount、不可讀檔、磁碟更動及取消全部 fail-closed</td></tr>
+<tr><td>P1-FILE-B</td><td>Markdown 摘要、容量統計、差異比較、檔名脫敏與本地下載</td><td>不讀秘密內容；報告不洩漏私有資訊；掃描 partial 狀態正確</td></tr>
+<tr><td>P1-FILE-C</td><td>候選清理分級、證據與信心、保留期、調查／隔離指令預覽</td><td>S0 禁止、S1 無刪除指令、S2/3 重新驗證；不可直接執行刪除</td></tr>
+<tr><td>P1-FILE-D</td><td>GitHub Private Check、最小權限、diff、核准、單次同步、日誌、衝突處理</td><td>私人轉公開、Token 失效、409／429、重試、敏感路徑均不得洩漏</td></tr>
+<tr><td>P1-FILE-E</td><td>Ubuntu 隔離環境 E2E，回歸 B1/P0，UEM 文件與交接包</td><td>使用 1 Worker 並與現有服務隔離；報告附可重現證據</td></tr>
+</tbody></table>
+<h3>32.4 現況：規格與程式必須分開</h3>
+<p>2026-11-04 可用的最新原始碼封包為 <code>Ubuntu_UEM_B1_Modified_Source_20261104.zip</code>，包含 304 個 ZIP 項目，SHA-256 <code>4fd56bb379746c82b7786ff46e041e6e8ebda49e372111a6dfbc16febaff17ce</code>。其內容是既有 B1 程式，<strong>不包含本次 P1-FILE-A～E 的完整實作與驗收</strong>。可供後續開發作為基線，但不可標記為正式 P1 成品。原有 B1.1 PHP／MFA／憑證、Root Broker 與備份恢復的 P0 問題仍需先驗證與結案。</p>
+<p><strong>交付標準：</strong>完整程式需提供獨立 ZIP 與 SHA-256，原始 ZIP 不包含憑證、資料庫檔、實機設定或可辨識私有資料。公開或私人 GitHub 不是備份替代品；需按 Rules.md 審核檔案內容與 Git 歷史。</p>
+<h3>32.5 驗收測試矩陣</h3>
+<ul>
+<li>正常：1k／100k 檔案、中文／空格／換行檔名、唯讀掃描、增量差異、Markdown 轉義、巨大檔案與 sparse 檔的容量計算。</li>
+<li>安全：symlink loop、symlink swap、path traversal、硬連結、mount bind、特殊檔、無權限目錄、注入式檔名、長路徑、疑似秘密檔名。</li>
+<li>穩定：斷電、程序中斷、disk full、SQLite busy、長掃描取消、重試冪等、Worker 單任務上限、服務資源限額。</li>
+<li>清理：不完整證據不得生成刪除命令；禁止執行刪除；掃描後目標更動須中止；隔離與回復需經獨立驗證。</li>
+<li>GitHub：Private 轉 Public、無權限、Token 撤銷、提交競態、Git 歷史殘留、敏感資訊掃描、重複按送出、不同版 SHA 衝突。</li>
+</ul>
+<p><strong>結論：</strong>此 P1 為正式新增需求，但進度仍為「規格已核准／程式待開發／Ubuntu 實機未驗收」。不得因 Markdown 已上傳或測試全部顯示綠色而自行宣稱正式可用。</p>
+</section><section class="chapter-panel" hidden="" id="lite-overview" role="tabpanel" tabindex="-1"><h2>33｜重構結論與核心原則</h2><p><b>核心決策：iSTUDY 管自己的業務；UEM 管 Ubuntu 主機。</b> 兩套系統同在一台 Ubuntu，但不必強制合併資料庫、Worker、業務 API 或部署流程。</p><div class="r7-metrics"><div class="r7-metric">建議管理介面<b>5 Tab</b>手機 Chrome 優先</div><div class="r7-metric">可延後或取消<b>5–7 類</b>獨立功能群</div><div class="r7-metric">預估減少新開發量<b>30–50%</b>主觀估算，非實測</div></div><h3>四項原則</h3><ol><li>保留既有 PHP + SQLite WAL + Python Worker 與最多 1 個管理 Task，不另建第二套引擎。</li><li>共用系統檢查指令、Markdown 格式、受控維護入口，不共用業務資料庫。</li><li>Flutter、複雜長期裝置認證、企業級多角色及通用專案適配器先延後。</li><li>精簡不能犧牲遠端命令安全：身份、授權、逾時、稽核、取消、權限隔離必須保留。</li></ol><div class="r7-note">來源：iSTUDY ZERO-OPS v7.2（23 Tab）與 UEM Rev6（原 33 章）。重疊判斷、精簡優先級與工作量數字為本次架構分析；兩份計畫均不代表已部署。</div></section><section class="chapter-panel" hidden="" id="lite-overlap" role="tabpanel" tabindex="-1"><h2>34｜兩系統功能重疊矩陣</h2><table><tr><th>功能</th><th>iSTUDY</th><th>UEM Lite</th><th>精簡決策</th></tr><tr><td>CPU／RAM／磁碟／ZFS</td><td>基本健康</td><td>主機盤點</td><td>共用只讀檢查命令</td></tr><tr><td>Nginx／PHP／PostgreSQL</td><td>服務驗收</td><td>服務狀態</td><td>共用檢查腳本，不重複開發</td></tr><tr><td>FFmpeg／ASR／Office</td><td>完整業務驗收</td><td>可觸發並看報告</td><td>腳本歸 iSTUDY，UEM 不重寫</td></tr><tr><td>更新／備份／恢復</td><td>專案生命週期</td><td>受控操作入口</td><td>iSTUDY 負責流程；UEM 僅呼叫固定腳本</td></tr><tr><td>任務佇列</td><td>影音長任務</td><td>單一管理 Task</td><td>保留兩套最小佇列，不建第三套</td></tr><tr><td>Markdown 日誌</td><td>驗收證據</td><td>操作結果</td><td>共用報告格式，不必共用 DB</td></tr><tr><td>GitHub</td><td>程式／版本</td><td>資產盤點</td><td>不同用途，人工審核同步</td></tr><tr><td>Page Atlas</td><td>管理頁定位</td><td>無必要</td><td>UEM 不導入</td></tr><tr><td>權限</td><td>業務 Super／Admin</td><td>單管理者優先</td><td>按操作風險分級</td></tr></table><p><b>禁止錯誤合併：</b>UEM 不直接操作 iSTUDY 業務資料表、不接管媒體 Worker、不因主機相同就把 SQLite 改成 PostgreSQL；iSTUDY 更新腳本仍須能獨立執行。</p></section><section class="chapter-panel" hidden="" id="lite-cut" role="tabpanel" tabindex="-1"><h2>35｜過度設計與刪減優先度</h2><table><tr><th>功能</th><th>評估</th><th>精簡方式</th></tr><tr><td>Flutter Android App</td><td>延後</td><td>手機 Chrome 先滿足日常需求</td></tr><tr><td>365／730 天裝置授權、Refresh 輪替</td><td>延後新增</td><td>Web 使用受保護 Session；不繞過 Cloudflare Access</td></tr><tr><td>TOTP／Email OTP／備援碼完整平台</td><td>縮小</td><td>先保留高風險操作 TOTP 與必要復原方式</td></tr><tr><td>Read Only／Operator／Super 三角色</td><td>縮小</td><td>單管理者＋後端 Action 風險驗證</td></tr><tr><td>通用 Action Registry／Project Profiles</td><td>縮小</td><td>少量固定模板與專案設定檔</td></tr><tr><td>GitHub 自動同步引擎</td><td>縮小</td><td>Markdown → 脫敏 → Diff → 人工核准 → Commit</td></tr><tr><td>檔案盤點多張關聯資料表</td><td>縮小</td><td>報告檔＋SQLite 任務索引，避免長期逐檔資產庫</td></tr><tr><td>自動刪除／完整回收平台</td><td>延後</td><td>僅建議與人工指令預覽</td></tr><tr><td>通用部署／更新平台</td><td>取消重造</td><td>由各專案維護腳本負責</td></tr><tr><td>SQLite WAL、逾時、Crash、日誌、稽核</td><td>保留</td><td>不可為精簡而刪除</td></tr></table><h3>精簡優先度（主觀架構評估，5 為最適合先刪減）</h3><div class="r7-bars"><div class="r7-bar">Flutter 與長期登入<div class="r7-track"><div class="r7-fill" style="width:100%"></div></div>5/5</div><div class="r7-bar">多角色／多專案框架<div class="r7-track"><div class="r7-fill" style="width:100%"></div></div>5/5</div><div class="r7-bar">檔案盤點資料庫<div class="r7-track"><div class="r7-fill" style="width:80%"></div></div>4/5</div><div class="r7-bar">GitHub 同步流程<div class="r7-track"><div class="r7-fill" style="width:60%"></div></div>3/5</div><div class="r7-bar">CLI 任務引擎<div class="r7-track"><div class="r7-fill" style="width:40%"></div></div>2/5</div><div class="r7-bar">安全與稽核<div class="r7-track"><div class="r7-fill" style="width:20%"></div></div>1/5</div></div><p>此圖不表示實測的程式碼縮減量或已完成刪減。</p></section><section class="chapter-panel" hidden="" id="lite-architecture" role="tabpanel" tabindex="-1"><h2>36｜UEM Lite 目標架構圖</h2><div class="r7-flow"><div class="r7-node"><strong>手機 Chrome／Ubuntu 本機瀏覽器</strong><small>一套響應式管理 Web UI；遠端經 Cloudflare Access</small></div><div class="r7-arrow">↓</div><div class="r7-node"><strong>UEM Lite｜PHP + SQLite WAL</strong><small>Web CLI、快捷操作、系統狀態、檔案盤點、任務與報告</small></div><div class="r7-arrow">↓</div><div class="r7-node"><strong>單一 Python Worker + 受限權限提升</strong><small>最多 1 個管理 Task；固定 Action、逾時、取消、稽核</small></div><div class="r7-arrow">↓</div><div class="r7-pair"><div class="r7-node"><strong>Ubuntu 主機</strong><small>系統狀態、服務、檔案中繼資料</small></div><div class="r7-node"><strong>iSTUDY 專屬腳本</strong><small>媒體驗收、更新、備份與回復</small></div></div></div><h3>必要的權限邊界</h3><ul><li>遠端 API 僅允許固定 Action ID 與驗證過的參數；不接受任意 Shell。</li><li>「root」勾選只表示請求，後端仍需權限檢查、必要 MFA、Broker allowlist。</li><li>如保留任意 CLI，應限於本機可信情境，與遠端 API 嚴格隔離。</li><li>不新增 Redis、RabbitMQ、Kubernetes、獨立 OAuth、監控平台、第二套 Worker。</li></ul></section><section class="chapter-panel" hidden="" id="lite-ui" role="tabpanel" tabindex="-1"><h2>37｜五個 Tab 圖文 UI 規劃</h2><div class="r7-mock"><div class="r7-mock-head">Ubuntu UEM Lite｜手機與桌面管理台</div><div class="r7-mock-tabs"><span>1 終端機</span><span>2 快捷操作</span><span>3 系統狀態</span><span>4 檔案盤點</span><span>5 任務紀錄</span></div><div class="r7-mock-body"><b>終端機輸入</b><div class="r7-fake-input">輸入 Ubuntu 指令…</div>☐ root　［預覽／確認］　［送出］<p><small>靜態示意；遠端不得取得任意 root Shell。</small></p></div></div><table><tr><th>Tab</th><th>核心功能</th><th>避免過度設計</th></tr><tr><td>1 終端機</td><td>輸入、root 勾選、預覽、受控執行、輸出</td><td>不提供遠端任意 Shell</td></tr><tr><td>2 快捷操作</td><td>三層下拉＋送出；健康、服務、驗收、報告</td><td>不建通用流程編排器</td></tr><tr><td>3 系統狀態</td><td>CPU／RAM、ZFS、服務、DB、容器</td><td>不建大型時序監控庫</td></tr><tr><td>4 檔案盤點</td><td>核准範圍 → 唯讀掃描 → 清理建議 → Markdown → GitHub</td><td>不自動刪除、不讀取秘密內容</td></tr><tr><td>5 任務紀錄</td><td>RUNNING／PASS／FAIL／SKIP、耗時、百分比、Markdown</td><td>不建 BI 報表平台</td></tr></table><p>手機離線不應中止伺服器任務；可用 Job ID 重開結果。Ubuntu 產生的報告與交付檔預設存於執行者可讀的 Downloads，並避免 root 所有權阻擋讀取。</p></section><section class="chapter-panel" hidden="" id="lite-roadmap" role="tabpanel" tabindex="-1"><h2>38｜分批實作與驗收</h2><table><tr><th>階段</th><th>工作</th><th>驗收出口</th></tr><tr><td>L0</td><td>盤點 B1 程式與依賴，標記 KEEP／SIMPLIFY／DEFER／REMOVE</td><td>實際檔案與 API／DB／Worker 證據</td></tr><tr><td>L1</td><td>修正 B1.1 安全、Crash、逾時、日誌</td><td>單任務、權限、回復測試</td></tr><tr><td>L2</td><td>五 Tab 手機 Web MVP</td><td>Chrome 真機完成查詢與固定 Action</td></tr><tr><td>L3</td><td>固定 Ubuntu／iSTUDY 維護入口</td><td>不複製專案邏輯、不直接改業務 DB</td></tr><tr><td>L4</td><td>唯讀檔案盤點、Markdown、清理建議</td><td>symlink、掛載、競態、權限測試</td></tr><tr><td>L5</td><td>Private GitHub 同步與 Ubuntu 實機驗收</td><td>Diff、核准、SHA、稽核、衝突測試</td></tr><tr><td>L6</td><td>Flutter／長期裝置憑證</td><td>僅有具體原生需求才啟動</td></tr></table><h3>測試與日誌硬限制</h3><p>每項驗收須顯示批次、百分比、耗時、RUNNING/PASS/FAIL/SKIP，具逾時、可中斷後查看的 Markdown 報告。SKIP、HOST_UNVERIFIED 不得當 PASS。不得影響 iSTUDY 正式服務。</p><p>本次僅產出計畫書，不修改程式、不部署、不開 PR、不改正式資料庫。</p></section><section class="chapter-panel" hidden="" id="lite-decisions" role="tabpanel" tabindex="-1"><h2>39｜決策追蹤與 Claude 接續指令</h2><table><tr><th>決策</th><th>建議</th><th>狀態</th></tr><tr><td>D01</td><td>保留 PHP／SQLite WAL／Python Worker</td><td>待實機核實</td></tr><tr><td>D02</td><td>手機 Chrome 優先，Flutter 延後</td><td>建議，待核准</td></tr><tr><td>D03</td><td>五 Tab，保留終端機與三層快捷選單</td><td>設計提案</td></tr><tr><td>D04</td><td>單管理者＋固定 Action＋高風險驗證</td><td>設計提案</td></tr><tr><td>D05</td><td>iSTUDY 專案腳本由 iSTUDY 自己維護</td><td>設計提案</td></tr><tr><td>D06</td><td>P1 唯讀盤點、清理僅建議</td><td>延續 Rev6</td></tr><tr><td>D07</td><td>GitHub 脫敏、預覽、人工核准</td><td>延續 Rev6</td></tr></table><h3>簡短接續開發指令</h3><pre>請先閱讀 Rev7 第 33–39 章及 Rev6 原有章節。
+盤點 B1 程式，標記 KEEP / SIMPLIFY / DEFER / REMOVE / HOST_UNVERIFIED。
+先修復 B1.1 安全、Worker 可靠性與日誌，再做 5 Tab 手機 Web MVP。
+保留 PHP + SQLite WAL + Python Worker，最多 1 個管理 Task。
+iSTUDY 專屬驗收、更新、備份由其腳本負責；UEM 僅受控觸發。
+遠端不提供任意 root Shell；清理不自動刪除。
+避免重造 Flutter、長期憑證、多角色、通用部署平台。
+集中修改、測試後一次交付 ZIP、SHA-256、進度與 Markdown 驗收報告。
+未經授權不開 PR、不合併、不部署、不操作正式 DB。</pre><p><b>正式精簡前必須先提出：</b>可移除程式與資料表清單、API／DB／Worker 差異、相依影響、回歸測試與回復方案；證據不足就保留既有程式。</p></section></article></div></main><script>
+(function(){
+"use strict";
+const nav=document.getElementById('chapter-nav');
+const panels=Array.from(document.querySelectorAll('article > section.chapter-panel'));
+const buttons=Array.from(nav.querySelectorAll('.chapter-button'));
+const counter=document.getElementById('chapter-counter');
+const search=document.getElementById('nav-search');
+let mode='one';
+function activate(id, updateHash){
+ const selected=panels.find(p=>p.id===id)||panels[33];
+ mode='one';
+ panels.forEach(p=>{p.hidden=p!==selected;});
+ buttons.forEach(b=>{
+  const active=b.dataset.target===selected.id;
+  b.classList.toggle('active',active);
+  b.setAttribute('aria-selected',active?'true':'false');
+ });
+ counter.textContent='目前：'+(panels.indexOf(selected)+1)+' / '+panels.length+' 章';
+ if(updateHash) history.replaceState(null,'','#'+encodeURIComponent(selected.id));
+ const b=buttons.find(x=>x.dataset.target===selected.id);
+ if(b) b.scrollIntoView({block:'nearest',behavior:'instant'});
+}
+function showAll(){
+ mode='all';panels.forEach(p=>p.hidden=false);
+ buttons.forEach(b=>b.classList.remove('active'));
+ counter.textContent='已展開全部 '+panels.length+' 章';
+}
+buttons.forEach(b=>b.addEventListener('click',()=>{activate(b.dataset.target,true);window.scrollTo({top:0,behavior:'instant'});}));
+document.getElementById('show-rev7').addEventListener('click',()=>activate(panels[33].id,true));
+document.getElementById('show-all').addEventListener('click',showAll);
+document.getElementById('show-one').addEventListener('click',()=>activate(panels[33].id,true));
+search.addEventListener('input',()=>{
+ const q=search.value.trim().toLocaleLowerCase();
+ nav.querySelectorAll('.nav-group').forEach(g=>{
+  let visible=0;
+  g.querySelectorAll('.chapter-button').forEach(b=>{
+   const match=!q||b.textContent.toLocaleLowerCase().includes(q);
+   b.hidden=!match;if(match)visible++;
+  });
+  g.hidden=visible===0;
+ });
+});
+window.addEventListener('hashchange',()=>{
+ const id=decodeURIComponent(location.hash.slice(1));
+ if(panels.some(p=>p.id===id))activate(id,false);
+});
+const initial=decodeURIComponent(location.hash.slice(1));
+activate(panels.some(p=>p.id===initial)?initial:panels[33].id,false);
+})();
+</script></body></html>

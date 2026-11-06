@@ -1,0 +1,42 @@
+# secrets and local settings
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.secret
+*credentials*
+# local runtime data / persistent state
+*.sqlite
+*.sqlite3
+*.db
+*.db-wal
+*.db-shm
+*.log
+*.bak
+*.tmp
+# build outputs and caches
+node_modules/
+dist/
+build/
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+coverage/
+htmlcov/
+*.pyc
+*.deb
+# runtime evidence is private by default
+evidence/**/console.log
+evidence/**/Host_Gates.md
+evidence/**/raw/
+# editors and OS noise
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
